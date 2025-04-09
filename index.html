@@ -45,7 +45,7 @@
       color: #fff;
       font-weight: 500;
     }
-    .date-picker {
+    .date-picker, .search-input {
       padding: 10px;
       background-color: #444;
       border: none;
@@ -55,7 +55,7 @@
       width: 100%;
       margin-top: 10px;
     }
-    .start-button, .reset-button {
+    .start-button, .reset-button, .search-button {
       padding: 12px 20px;
       margin-top: 15px;
       background-color: #5cb85c;
@@ -67,7 +67,7 @@
       width: 100%;
       transition: 0.3s;
     }
-    .start-button:hover, .reset-button:hover {
+    .start-button:hover, .reset-button:hover, .search-button:hover {
       background-color: #4cae4c;
     }
     .footer {
@@ -98,6 +98,8 @@
     <h1>التحدي الشخصي</h1>
     <p class="message">أنت الآن في اليوم: <span id="counter" class="counter">0</span></p>
     <input type="date" id="datePicker" class="date-picker" />
+    <input type="text" id="searchInput" class="search-input" placeholder="ابحث عن صديق..." />
+    <button id="searchButton" class="search-button">بحث</button>
     <div id="alertMessage" class="alert"></div>
     <button id="startButton" class="start-button">تحديد تاريخ البدء</button>
     <button id="resetButton" class="reset-button">خسرت؟ أعد التحدي</button>
@@ -109,6 +111,14 @@
   <script>
     let startDate = localStorage.getItem("startDate");
     let currentDays = 0;
+
+    // بيانات المستخدم "drwish"
+    const users = {
+      "drwish": {
+        "name": "drwish",
+        "startDate": "2024-11-07"
+      }
+    };
 
     // تحديث العداد بناءً على تاريخ البدء
     function calculateDays() {
@@ -151,6 +161,21 @@
         alertMessage.classList.remove("show");
       }, 3000);
     }
+
+    // البحث عن الأصدقاء
+    document.getElementById("searchButton").addEventListener("click", () => {
+      const searchQuery = document.getElementById("searchInput").value.toLowerCase();
+      if (searchQuery in users) {
+        const user = users[searchQuery];
+        const userStartDate = new Date(user.startDate);
+        const now = new Date();
+        const diffTime = now - userStartDate;
+        const userDays = Math.floor(diffTime / (1000 * 60 * 60 * 24));
+        showAlert(`الصديق: ${user.name} صامد منذ ${userDays} يوم.`);
+      } else {
+        showAlert("لم يتم العثور على هذا المستخدم.");
+      }
+    });
 
     // التحقق من تاريخ البدء عند تحميل الصفحة
     if (startDate) {
