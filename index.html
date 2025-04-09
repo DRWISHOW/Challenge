@@ -68,6 +68,11 @@
       color: #facc15;
       margin-top: 10px;
     }
+    #footer {
+      font-size: 0.8rem;
+      color: #aaaaaa;
+      margin-top: 50px;
+    }
   </style>
 </head>
 <body>
@@ -95,6 +100,10 @@
   <div id="friendTracker" class="box">
     <h3>الصديق <span id="friendLabel"></span> صامد منذ:</h3>
     <div id="friendDays">0</div>
+  </div>
+
+  <div id="footer">
+    <p>صامد - برمجة وتصميم عبدالله علي محمد الدرويش. جميع الحقوق محفوظة.</p>
   </div>
 
   <script>
@@ -129,10 +138,10 @@
     resetBtn.onclick = () => {
       const currentUser = localStorage.getItem("samidCurrentUser");
       if (currentUser) {
-        delete localData[currentUser];
+        localData[currentUser] = new Date().toISOString().split('T')[0]; // إعادة التحدي من اليوم
         localStorage.setItem("samidUsers", JSON.stringify(localData));
-        localStorage.removeItem("samidCurrentUser");
-        location.reload();
+        showUser(currentUser); // إعادة عرض التقدم من اليوم الجديد
+        messageDisplay.textContent = "لا مشكلة! كلنا نواجه تحديات. استمر، يمكنك فعلها!";
       }
     }
 
