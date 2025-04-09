@@ -46,8 +46,8 @@
       margin-top: 10px;
       transition: background-color 0.3s;
     }
-    #startBtn { background-color: #3b82f6; color: white; }
-    #startBtn:hover { background-color: #2563eb; }
+    #searchBtn { background-color: #10b981; color: white; }
+    #searchBtn:hover { background-color: #059669; }
     #resetBtn {
       background-color: transparent;
       color: #f87171;
@@ -57,8 +57,6 @@
       margin-top: 10px;
       display: block;
     }
-    #searchBtn { background-color: #10b981; color: white; }
-    #searchBtn:hover { background-color: #059669; }
     #tracker {
       margin-top: 20px;
     }
@@ -67,6 +65,11 @@
       font-weight: bold;
       color: #facc15;
       margin-top: 10px;
+    }
+    #message {
+      font-size: 1.2rem;
+      margin-top: 20px;
+      color: #ffffff;
     }
     #footer {
       font-size: 0.8rem;
@@ -97,6 +100,7 @@
   <div id="tracker" class="box">
     <h2>أنت صامد منذ:</h2>
     <div id="days">0</div>
+    <div id="message"></div>
     <button id="resetBtn">خسرت؟ اضغط هنا لإعادة التحدي</button>
   </div>
 
@@ -130,10 +134,25 @@
     const resetBtn = document.getElementById("resetBtn");
     const tracker = document.getElementById("tracker");
     const daysDisplay = document.getElementById("days");
+    const messageDisplay = document.getElementById("message");
     const lostBtn = document.getElementById("lostBtn");
+
+    // قراءة البيانات المخزنة في localStorage عند تحميل الصفحة
+    const storedPhone = localStorage.getItem("storedPhone");
+    if (storedPhone) {
+      phoneInput.value = storedPhone;
+      searchForUser(storedPhone); // إذا كان هناك رقم هاتف مخزن سابقًا، يتم العثور على المستخدم مباشرة
+    }
 
     searchBtn.onclick = () => {
       const phone = phoneInput.value.trim();
+      if (phone) {
+        localStorage.setItem("storedPhone", phone); // حفظ رقم الهاتف في localStorage
+        searchForUser(phone);
+      }
+    };
+
+    function searchForUser(phone) {
       if (usersData[phone]) {
         const startDate = new Date(usersData[phone]);
         const now = new Date();
@@ -141,6 +160,8 @@
         daysDisplay.textContent = diff;
         tracker.style.display = 'block';
         lostBtn.style.display = 'block'; // إظهار زر الخسارة
+        showMotivation(diff);
+
         resetBtn.onclick = () => {
           // إرسال رسالة على واتساب عند الضغط على زر "خسرت"
           window.location.href = `https://wa.me/967734799935?text=لقد%20خسرت%20وأحتاج%20إعادة%20بياناتي%20لرقم%20${phone}`;
@@ -148,8 +169,26 @@
       } else {
         alert("لم يتم العثور على هذا الرقم.");
       }
-    };
+    }
 
+    // إظهار الرسائل التحفيزية بناءً على عدد الأيام
+    function showMotivation(days) {
+      if (days < 10) {
+        messageDisplay.textContent = "أنت في البداية، لا تستسلم! الطريق طويل لكنك قادر على النجاح.";
+      } else if (days >= 10 && days < 30) {
+        messageDisplay.textContent = "لقد مررت بعشرة أيام! رائع، أنت على الطريق الصحيح.";
+      } else if (days >= 30 && days < 50) {
+        messageDisplay.textContent = "أنت بطل! 30 يومًا بدون تراجع! استمر في التقدم.";
+      } else if (days >= 50 && days < 100) {
+        messageDisplay.textContent = "50 يومًا من الصمود! أنت تظهر قوة غير عادية، فخورون بك.";
+      } else if (days >= 100 && days < 200) {
+        messageDisplay.textContent = "100 يوم! لم يعد هناك شيء يقف في طريقك، استمر في مسيرتك!";
+      } else if (days >= 200 && days < 365) {
+        messageDisplay.textContent = "أنت شخص استثنائي! 200 يوم من العزيمة والإرادة.";
+      } else if (days >= 365) {
+        messageDisplay.textContent = "عام كامل! تخطيت المستحيل! أنت الآن أسطورة الصمود!";
+      }
+    }
 
   </script>
 </body>
