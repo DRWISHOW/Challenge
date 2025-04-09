@@ -6,7 +6,7 @@
   <title>التحدي الشخصي</title>
   <style>
     body {
-      font-family: Arial, sans-serif;
+      font-family: 'Arial', sans-serif;
       direction: rtl;
       background-color: #f0f4f8;
       margin: 0;
@@ -16,22 +16,22 @@
     .container {
       max-width: 600px;
       margin: 50px auto;
-      padding: 30px;
+      padding: 40px;
       background-color: #ffffff;
       border-radius: 12px;
-      box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
+      box-shadow: 0 12px 24px rgba(0, 0, 0, 0.1);
     }
     h1 {
       color: #4CAF50;
-      font-size: 40px;
+      font-size: 36px;
       margin-bottom: 20px;
     }
     .message {
-      font-size: 24px;
+      font-size: 22px;
       margin: 20px 0;
     }
     .days {
-      font-size: 60px;
+      font-size: 70px;
       font-weight: bold;
       color: #FF9800;
     }
@@ -42,8 +42,8 @@
       text-align: center;
     }
     button {
-      padding: 15px 25px;
-      font-size: 20px;
+      padding: 15px 30px;
+      font-size: 18px;
       margin: 10px;
       border: none;
       border-radius: 8px;
@@ -67,6 +67,11 @@
     .alert.show {
       display: block;
     }
+    .start-date {
+      font-size: 16px;
+      color: #333;
+      margin-top: 15px;
+    }
   </style>
 </head>
 <body>
@@ -75,6 +80,7 @@
     <h1>التحدي الشخصي</h1>
     <p class="message">أنت في اليوم <span id="days" class="days">0</span></p>
     <p>استمر في التحدي، أنت قوي!</p>
+    <p class="start-date" id="startDate"></p>
     <div class="alert" id="alertMessage">لقد أعدت التحدي بنجاح! استمر، أنت قادر!</div>
     <button id="startButton">ابدأ من جديد</button>
     <button id="resetButton">خسرت؟ أعد التحدي</button>
@@ -100,6 +106,11 @@
       const diffTime = now - start;
       currentDays = Math.floor(diffTime / (1000 * 60 * 60 * 24));
       document.getElementById("days").textContent = currentDays;
+
+      // عرض تاريخ البدء
+      const startDateElement = document.getElementById("startDate");
+      const formattedDate = start.toLocaleDateString('ar-EG', { year: 'numeric', month: 'long', day: 'numeric' });
+      startDateElement.textContent = `بدأت التحدي في: ${formattedDate}`;
     }
 
     // إعادة تعيين العداد
