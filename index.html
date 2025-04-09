@@ -1,190 +1,208 @@
 <!DOCTYPE html>
-<html lang="ar">
+<html lang="ar" dir="rtl">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>التحدي الشخصي</title>
+  <title>صامد - عداد التحدي</title>
   <style>
+    @import url('https://fonts.googleapis.com/css2?family=Cairo:wght@500;700&display=swap');
     body {
-      font-family: 'Roboto', sans-serif;
-      direction: rtl;
-      background-color: #2b2b2b;
-      color: #fff;
-      margin: 0;
-      padding: 0;
+      font-family: 'Cairo', sans-serif;
+      background: linear-gradient(to right, #0f2027, #203a43, #2c5364);
+      color: #ffffff;
+      padding: 20px;
       text-align: center;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      height: 100vh;
-      background: linear-gradient(135deg, #4e9f3d, #7ac142);
-    }
-    .container {
-      background-color: #333;
-      border-radius: 15px;
-      padding: 40px;
-      box-shadow: 0 8px 30px rgba(0, 0, 0, 0.5);
-      width: 350px;
-      text-align: center;
-      position: relative;
     }
     h1 {
-      font-size: 36px;
-      color: #fff;
-      margin-bottom: 20px;
-      font-weight: 700;
+      color: #10b981;
+      font-size: 2.5rem;
+      margin-bottom: 30px;
     }
-    .counter {
-      font-size: 80px;
-      color: #ff9900;
-      font-weight: bold;
+    .box {
+      padding: 20px;
+      margin: 20px auto;
+      max-width: 400px;
+      background-color: rgba(255, 255, 255, 0.05);
+      border-radius: 20px;
+      backdrop-filter: blur(8px);
+      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
     }
-    .message {
-      font-size: 18px;
-      margin: 20px 0;
-      color: #fff;
-      font-weight: 500;
-    }
-    .date-picker, .search-input {
-      padding: 10px;
-      background-color: #444;
+    input[type="text"], input[type="date"] {
+      width: 90%;
+      padding: 12px;
+      font-size: 1rem;
+      border-radius: 12px;
       border: none;
-      border-radius: 10px;
-      color: #fff;
-      font-size: 16px;
-      width: 100%;
+      margin-top: 10px;
+      margin-bottom: 10px;
+      background-color: #f9fafb;
+    }
+    button {
+      padding: 12px 20px;
+      font-size: 1rem;
+      border-radius: 12px;
+      border: none;
+      cursor: pointer;
+      margin-top: 10px;
+      transition: background-color 0.3s;
+    }
+    #startBtn { background-color: #3b82f6; color: white; }
+    #startBtn:hover { background-color: #2563eb; }
+    #resetBtn {
+      background-color: transparent;
+      color: #f87171;
+      font-size: 0.9rem;
+      text-decoration: underline;
+      border: none;
+      margin-top: 10px;
+      display: block;
+    }
+    #viewFriendBtn { background-color: #10b981; color: white; }
+    #viewFriendBtn:hover { background-color: #059669; }
+    #tracker, #friendTracker {
+      margin-top: 20px;
+    }
+    #days, #friendDays {
+      font-size: 3rem;
+      font-weight: bold;
+      color: #facc15;
       margin-top: 10px;
     }
-    .start-button, .reset-button, .search-button {
-      padding: 12px 20px;
-      margin-top: 15px;
-      background-color: #5cb85c;
-      color: #fff;
-      border: none;
-      border-radius: 10px;
-      font-size: 16px;
-      cursor: pointer;
-      width: 100%;
-      transition: 0.3s;
-    }
-    .start-button:hover, .reset-button:hover, .search-button:hover {
-      background-color: #4cae4c;
-    }
-    .footer {
-      margin-top: 30px;
-      font-size: 14px;
-      color: #aaa;
-    }
-    .footer span {
-      font-weight: bold;
-    }
-    .alert {
-      background-color: #ffcc00;
-      color: #333;
-      padding: 15px;
-      margin: 20px 0;
-      border-radius: 8px;
-      font-size: 16px;
-      display: none;
-    }
-    .alert.show {
-      display: block;
+    #footer {
+      font-size: 0.8rem;
+      color: #aaaaaa;
+      margin-top: 50px;
     }
   </style>
 </head>
 <body>
+  <h1>صامد - تحدي الأبطال</h1>
+  <div class="box">
+    <h2>ابدأ رحلتك</h2>
+    <input type="text" id="username" placeholder="اسم المستخدم">
+    <input type="date" id="startDate">
+    <button id="startBtn">انطلاق</button>
+  </div>
 
-  <div class="container">
-    <h1>التحدي الشخصي</h1>
-    <p class="message">أنت الآن في اليوم: <span id="counter" class="counter">0</span></p>
-    <input type="date" id="datePicker" class="date-picker" />
-    <input type="text" id="searchInput" class="search-input" placeholder="ابحث عن صديق..." />
-    <button id="searchButton" class="search-button">بحث</button>
-    <div id="alertMessage" class="alert"></div>
-    <button id="startButton" class="start-button">تحديد تاريخ البدء</button>
-    <button id="resetButton" class="reset-button">خسرت؟ أعد التحدي</button>
-    <div class="footer">
-      <p>مطور الموقع: <span>عبدالله علي محمد الدرويش</span></p>
-    </div>
+  <div id="tracker" class="box">
+    <h2>يا <span id="userLabel"></span>، أنت صامد منذ:</h2>
+    <div id="days">0</div>
+    <button id="resetBtn">خسرت؟ اضغط هنا لإعادة التحدي</button>
+    <div id="message"></div>
+  </div>
+
+  <div class="box">
+    <h2>شوف صديقك الصامد</h2>
+    <input type="text" id="friendName" placeholder="اسم صديقك">
+    <button id="viewFriendBtn">اعرض التقدم</button>
+  </div>
+
+  <div id="friendTracker" class="box">
+    <h3>الصديق <span id="friendLabel"></span> صامد منذ:</h3>
+    <div id="friendDays">0</div>
+  </div>
+
+  <div id="footer">
+    <p>صامد - برمجة وتصميم عبدالله علي محمد الدرويش. جميع الحقوق محفوظة.</p>
   </div>
 
   <script>
-    let startDate = localStorage.getItem("startDate");
-    let currentDays = 0;
+    let localData = JSON.parse(localStorage.getItem("samidUsers")) || {};
 
-    // بيانات المستخدم "drwish"
-    const users = {
-      "drwish": {
-        "name": "drwish",
-        "startDate": "2024-11-07"
+    const usernameInput = document.getElementById("username");
+    const startDateInput = document.getElementById("startDate");
+    const startBtn = document.getElementById("startBtn");
+    const resetBtn = document.getElementById("resetBtn");
+    const tracker = document.getElementById("tracker");
+    const userLabel = document.getElementById("userLabel");
+    const daysDisplay = document.getElementById("days");
+    const messageDisplay = document.getElementById("message");
+
+    const friendNameInput = document.getElementById("friendName");
+    const viewFriendBtn = document.getElementById("viewFriendBtn");
+    const friendTracker = document.getElementById("friendTracker");
+    const friendLabel = document.getElementById("friendLabel");
+    const friendDays = document.getElementById("friendDays");
+
+    // إضافة بيانات المستخدم "drwish" الثابتة
+    const drwishStartDate = "2024-11-07";
+    localData["drwish"] = drwishStartDate;
+    localStorage.setItem("samidUsers", JSON.stringify(localData));
+
+    startBtn.onclick = () => {
+      const user = usernameInput.value.trim();
+      const date = startDateInput.value;
+      if (user && date) {
+        localData[user] = date;
+        localStorage.setItem("samidUsers", JSON.stringify(localData));
+        localStorage.setItem("samidCurrentUser", user);
+        showUser(user);
       }
+    }
+
+    resetBtn.onclick = () => {
+      const currentUser = localStorage.getItem("samidCurrentUser");
+      if (currentUser) {
+        localData[currentUser] = new Date().toISOString().split('T')[0]; // إعادة التحدي من اليوم
+        localStorage.setItem("samidUsers", JSON.stringify(localData));
+        showUser(currentUser); // إعادة عرض التقدم من اليوم الجديد
+        messageDisplay.textContent = "لا مشكلة! كلنا نواجه تحديات. استمر، يمكنك فعلها!";
+      }
+    }
+
+    function showUser(user) {
+      const startDate = new Date(localData[user]);
+      const now = new Date();
+      const diff = Math.floor((now - startDate) / (1000 * 60 * 60 * 24));
+      userLabel.textContent = user;
+      daysDisplay.textContent = diff;
+      tracker.style.display = 'block';
+      showMessage(diff);
+    }
+
+    function showFriend(friend) {
+      if (localData[friend]) {
+        const start = new Date(localData[friend]);
+        const now = new Date();
+        const days = Math.floor((now - start) / (1000 * 60 * 60 * 24));
+        friendLabel.textContent = friend;
+        friendDays.textContent = days;
+        friendTracker.style.display = 'block';
+      } else {
+        alert("لم يتم العثور على هذا المستخدم.");
+      }
+    }
+
+    function showMessage(days) {
+      if (days >= 10 && days < 30) {
+        messageDisplay.textContent = "مبروك! أنت تخطيت بداية التحدي! هذا فقط بداية رحلة عظيمة، استمر!";
+      } else if (days >= 30 && days < 50) {
+        messageDisplay.textContent = "يا بطل! 30 يومًا بدون تراجع! أنت في طريقك لتحقيق أشياء عظيمة!";
+      } else if (days >= 50 && days < 100) {
+        messageDisplay.textContent = "واو! أنت الآن فوق القمة! 50 يومًا من القوة والصمود! فخورين بك!";
+      } else if (days >= 100 && days < 200) {
+        messageDisplay.textContent = "100 يوم! أنت فعلاً أسطورة! لا يوقفك شيء الآن! واصل التفوق!";
+      } else if (days >= 200 && days < 365) {
+        messageDisplay.textContent = "لقد دخلت مرحلة الاستثنائية! 200 يوم من الإرادة التي لا تهزم! أنت ملهم!";
+      } else if (days >= 365) {
+        messageDisplay.textContent = "عام كامل! تخطيت المستحيل! أنت الآن واحد من الأكثر قوة وصمود على وجه الأرض! العالم كله أمامك!";
+      }
+    }
+
+    viewFriendBtn.onclick = () => {
+      const friend = friendNameInput.value.trim();
+      if (friend) showFriend(friend);
+    }
+
+    window.onload = () => {
+      const currentUser = localStorage.getItem("samidCurrentUser");
+      if (currentUser && localData[currentUser]) {
+        showUser(currentUser);
+      }
+      // تحديث العداد بشكل دوري
+      setInterval(updateDays, 1000 * 60 * 60 * 24); // تحديث يوميًا (كل 24 ساعة)
     };
 
-    // تحديث العداد بناءً على تاريخ البدء
-    function calculateDays() {
-      if (!startDate) return;
-      
-      const now = new Date();
-      const start = new Date(startDate);
-      const diffTime = now - start;
-      currentDays = Math.floor(diffTime / (1000 * 60 * 60 * 24));
-      document.getElementById("counter").textContent = currentDays;
-    }
-
-    // تخصيص تاريخ البدء
-    document.getElementById("startButton").addEventListener("click", () => {
-      const selectedDate = document.getElementById("datePicker").value;
-      if (selectedDate) {
-        startDate = selectedDate;
-        localStorage.setItem("startDate", startDate);
-        calculateDays();
-      } else {
-        alert("من فضلك اختر تاريخًا صالحًا");
-      }
-    });
-
-    // إعادة تعيين العداد
-    document.getElementById("resetButton").addEventListener("click", () => {
-      localStorage.removeItem("startDate");
-      startDate = new Date().toISOString();
-      localStorage.setItem("startDate", startDate);
-      calculateDays();
-      showAlert("لقد أعدت التحدي بنجاح! استمر، أنت قادر!");
-    });
-
-    // عرض التنبيه
-    function showAlert(message) {
-      const alertMessage = document.getElementById("alertMessage");
-      alertMessage.textContent = message;
-      alertMessage.classList.add("show");
-      setTimeout(() => {
-        alertMessage.classList.remove("show");
-      }, 3000);
-    }
-
-    // البحث عن الأصدقاء
-    document.getElementById("searchButton").addEventListener("click", () => {
-      const searchQuery = document.getElementById("searchInput").value.toLowerCase();
-      if (searchQuery in users) {
-        const user = users[searchQuery];
-        const userStartDate = new Date(user.startDate);
-        const now = new Date();
-        const diffTime = now - userStartDate;
-        const userDays = Math.floor(diffTime / (1000 * 60 * 60 * 24));
-        showAlert(`الصديق: ${user.name} صامد منذ ${userDays} يوم.`);
-      } else {
-        showAlert("لم يتم العثور على هذا المستخدم.");
-      }
-    });
-
-    // التحقق من تاريخ البدء عند تحميل الصفحة
-    if (startDate) {
-      calculateDays();
-    }
-
-    // تحديث العداد يومياً
-    setInterval(calculateDays, 86400000);  // تحديث العداد يومياً
-  </script>
-
-</body>
-</html>
+    function updateDays() {
+      const currentUser = localStorage.getItem("samidCurrentUser");
+      if
