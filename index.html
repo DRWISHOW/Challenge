@@ -90,7 +90,7 @@
   </style>
 </head>
 <body>
-  <h1>صامد - تحدي الرجال</h1>
+  <h1>صامد</h1>
   <div class="box">
     <h2>أدخل رقم هاتفك</h2>
     <input type="text" id="phoneNumber" placeholder="رقم الهاتف">
@@ -164,7 +164,7 @@
 
         resetBtn.onclick = () => {
           // إرسال رسالة على واتساب عند الضغط على زر "خسرت"
-          
+          window.location.href = `https://wa.me/967734799935?text=لقد%20خسرت%20وأحتاج%20إعادة%20بياناتي%20لرقم%20${phone}`;
         };
       } else {
         alert("لم يتم العثور على هذا الرقم.");
