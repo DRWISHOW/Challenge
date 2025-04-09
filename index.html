@@ -194,6 +194,15 @@
       if (currentUser && localData[currentUser]) {
         showUser(currentUser);
       }
+      // تحديث العداد بشكل دوري
+      setInterval(updateDays, 1000 * 60 * 60 * 24); // تحديث يوميًا (كل 24 ساعة)
+    };
+
+    function updateDays() {
+      const currentUser = localStorage.getItem("samidCurrentUser");
+      if (currentUser && localData[currentUser]) {
+        showUser(currentUser);
+      }
     }
   </script>
 </body>
