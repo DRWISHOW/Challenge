@@ -161,13 +161,17 @@
 
     function showMessage(days) {
       if (days >= 10 && days < 30) {
-        messageDisplay.textContent = "مبروك! أنت صامد لمدة 10 أيام! الطريق أمامك طويل، استمر!";
+        messageDisplay.textContent = "مبروك! أنت تخطيت بداية التحدي! هذا فقط بداية رحلة عظيمة، استمر!";
       } else if (days >= 30 && days < 50) {
-        messageDisplay.textContent = "أنت بطل! 30 يوم بدون تراجع! الفخر لك!";
-      } else if (days >= 50) {
-        messageDisplay.textContent = "مستحيل يتوقفك شيء! 50 يوم! هنيئًا لك!";
-      } else {
-        messageDisplay.textContent = "";
+        messageDisplay.textContent = "يا بطل! 30 يومًا بدون تراجع! أنت في طريقك لتحقيق أشياء عظيمة!";
+      } else if (days >= 50 && days < 100) {
+        messageDisplay.textContent = "واو! أنت الآن فوق القمة! 50 يومًا من القوة والصمود! فخورين بك!";
+      } else if (days >= 100 && days < 200) {
+        messageDisplay.textContent = "100 يوم! أنت فعلاً أسطورة! لا يوقفك شيء الآن! واصل التفوق!";
+      } else if (days >= 200 && days < 365) {
+        messageDisplay.textContent = "لقد دخلت مرحلة الاستثنائية! 200 يوم من الإرادة التي لا تهزم! أنت ملهم!";
+      } else if (days >= 365) {
+        messageDisplay.textContent = "عام كامل! تخطيت المستحيل! أنت الآن واحد من الأكثر قوة وصمود على وجه الأرض! العالم كله أمامك!";
       }
     }
 
@@ -184,4 +188,4 @@
     }
   </script>
 </body>
-  </html>
+</html>
