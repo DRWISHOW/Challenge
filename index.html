@@ -2,81 +2,161 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>تحدي الصمود - صامد</title>
+  <title>صامد - عداد التحدي</title>
   <style>
+    @import url('https://fonts.googleapis.com/css2?family=Cairo:wght@500;700&display=swap');
     body {
-      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-      background: #f3f4f6;
-      text-align: center;
+      font-family: 'Cairo', sans-serif;
+      background: linear-gradient(to right, #0f2027, #203a43, #2c5364);
+      color: #ffffff;
       padding: 20px;
-      color: #1f2937;
+      text-align: center;
     }
     h1 {
-      font-size: 2rem;
       color: #10b981;
+      font-size: 2.5rem;
+      margin-bottom: 30px;
     }
-    #days {
-      font-size: 4rem;
-      margin: 20px 0;
-      color: #ef4444;
+    .box {
+      padding: 20px;
+      margin: 20px auto;
+      max-width: 400px;
+      background-color: rgba(255, 255, 255, 0.05);
+      border-radius: 20px;
+      backdrop-filter: blur(8px);
+      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+    }
+    input[type="text"], input[type="date"] {
+      width: 90%;
+      padding: 12px;
+      font-size: 1rem;
+      border-radius: 12px;
+      border: none;
+      margin-top: 10px;
+      margin-bottom: 10px;
+      background-color: #f9fafb;
     }
     button {
-      padding: 10px 20px;
+      padding: 12px 20px;
       font-size: 1rem;
+      border-radius: 12px;
       border: none;
-      border-radius: 10px;
-      margin: 10px;
       cursor: pointer;
+      margin-top: 10px;
+      transition: background-color 0.3s;
     }
     #startBtn { background-color: #3b82f6; color: white; }
-    #resetBtn { background-color: #ef4444; color: white; }
-    input[type="date"] {
-      padding: 10px;
-      font-size: 1rem;
-      margin: 10px;
+    #startBtn:hover { background-color: #2563eb; }
+    #resetBtn {
+      background-color: transparent;
+      color: #f87171;
+      font-size: 0.9rem;
+      text-decoration: underline;
+      border: none;
+      margin-top: 10px;
+      display: block;
+    }
+    #viewFriendBtn { background-color: #10b981; color: white; }
+    #viewFriendBtn:hover { background-color: #059669; }
+    #tracker, #friendTracker {
+      margin-top: 20px;
+    }
+    #days, #friendDays {
+      font-size: 3rem;
+      font-weight: bold;
+      color: #facc15;
+      margin-top: 10px;
     }
   </style>
 </head>
 <body>
-  <h1>تحدي الصمود - صامد</h1>
-  <div id="welcome"></div>
-  <p>أدخل تاريخ بداية التحدي:</p>
-  <input type="date" id="startDate">
-  <button id="startBtn">ابدأ التحدي</button>  <div id="tracker" style="display:none;">
-    <h2>لقد صمدت:</h2>
+  <h1>صامد - تحدي الأبطال</h1>
+  <div class="box">
+    <h2>ابدأ رحلتك</h2>
+    <input type="text" id="username" placeholder="اسم المستخدم">
+    <input type="date" id="startDate">
+    <button id="startBtn">انطلاق</button>
+  </div>  <div id="tracker" class="box">
+    <h2>يا <span id="userLabel"></span>، أنت صامد منذ:</h2>
     <div id="days">0</div>
-    <button id="resetBtn">خسرت، أعد التحدي</button>
+    <button id="resetBtn">خسرت؟ اضغط هنا لإعادة التحدي</button>
+  </div>  <div class="box">
+    <h2>شوف صديقك الصامد</h2>
+    <input type="text" id="friendName" placeholder="اسم صديقك">
+    <button id="viewFriendBtn">اعرض التقدم</button>
+  </div>  <div id="friendTracker" class="box">
+    <h3>الصديق <span id="friendLabel"></span> صامد منذ:</h3>
+    <div id="friendDays">0</div>
   </div>  <script>
-    const startDateInput = document.getElementById('startDate');
-    const startBtn = document.getElementById('startBtn');
-    const resetBtn = document.getElementById('resetBtn');
-    const tracker = document.getElementById('tracker');
-    const daysDisplay = document.getElementById('days');
+    let localData = JSON.parse(localStorage.getItem("samidUsers")) || {};
 
-    function updateDays() {
-      const start = localStorage.getItem('samidStart');
-      if (start) {
-        const startDate = new Date(start);
-        const now = new Date();
-        const diff = Math.floor((now - startDate) / (1000 * 60 * 60 * 24));
-        daysDisplay.textContent = diff;
-        tracker.style.display = 'block';
-        document.getElementById('welcome').textContent = `تاريخ بدايتك: ${startDate.toLocaleDateString()}`;
-      }
-    }
+    const usernameInput = document.getElementById("username");
+    const startDateInput = document.getElementById("startDate");
+    const startBtn = document.getElementById("startBtn");
+    const resetBtn = document.getElementById("resetBtn");
+    const tracker = document.getElementById("tracker");
+    const userLabel = document.getElementById("userLabel");
+    const daysDisplay = document.getElementById("days");
+
+    const friendNameInput = document.getElementById("friendName");
+    const viewFriendBtn = document.getElementById("viewFriendBtn");
+    const friendTracker = document.getElementById("friendTracker");
+    const friendLabel = document.getElementById("friendLabel");
+    const friendDays = document.getElementById("friendDays");
 
     startBtn.onclick = () => {
-      if (startDateInput.value) {
-        localStorage.setItem('samidStart', startDateInput.value);
-        updateDays();
+      const user = usernameInput.value.trim();
+      const date = startDateInput.value;
+      if (user && date) {
+        localData[user] = date;
+        localStorage.setItem("samidUsers", JSON.stringify(localData));
+        localStorage.setItem("samidCurrentUser", user);
+        showUser(user);
       }
     }
 
     resetBtn.onclick = () => {
-      localStorage.removeItem('samidStart');
-      location.reload();
+      const currentUser = localStorage.getItem("samidCurrentUser");
+      if (currentUser) {
+        delete localData[currentUser];
+        localStorage.setItem("samidUsers", JSON.stringify(localData));
+        localStorage.removeItem("samidCurrentUser");
+        location.reload();
+      }
     }
 
-    window.onload = updateDays;
+    function showUser(user) {
+      const startDate = new Date(localData[user]);
+      const now = new Date();
+      const diff = Math.floor((now - startDate) / (1000 * 60 * 60 * 24));
+      userLabel.textContent = user;
+      daysDisplay.textContent = diff;
+      tracker.style.display = 'block';
+    }
+
+    function showFriend(friend) {
+      if (localData[friend]) {
+        const start = new Date(localData[friend]);
+        const now = new Date();
+        const days = Math.floor((now - start) / (1000 * 60 * 60 * 24));
+        friendLabel.textContent = friend;
+        friendDays.textContent = days;
+        friendTracker.style.display = 'block';
+      } else {
+        alert("لم يتم العثور على هذا المستخدم.");
+      }
+    }
+
+    viewFriendBtn.onclick = () => {
+      const friend = friendNameInput.value.trim();
+      if (friend) showFriend(friend);
+    }
+
+    window.onload = () => {
+      const currentUser = localStorage.getItem("samidCurrentUser");
+      if (currentUser && localData[currentUser]) {
+        showUser(currentUser);
+      }
+    }
   </script></body>
 </html>
