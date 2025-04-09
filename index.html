@@ -8,7 +8,7 @@
     body {
       font-family: Arial, sans-serif;
       direction: rtl;
-      background-color: #f4f4f4;
+      background-color: #f0f4f8;
       margin: 0;
       padding: 0;
       text-align: center;
@@ -16,41 +16,56 @@
     .container {
       max-width: 600px;
       margin: 50px auto;
-      padding: 20px;
+      padding: 30px;
       background-color: #ffffff;
-      border-radius: 8px;
-      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+      border-radius: 12px;
+      box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
     }
     h1 {
       color: #4CAF50;
-      font-size: 36px;
+      font-size: 40px;
+      margin-bottom: 20px;
     }
     .message {
       font-size: 24px;
       margin: 20px 0;
     }
     .days {
-      font-size: 48px;
+      font-size: 60px;
       font-weight: bold;
       color: #FF9800;
-    }
-    button {
-      padding: 10px 20px;
-      font-size: 18px;
-      margin: 10px;
-      border: none;
-      border-radius: 5px;
-      background-color: #4CAF50;
-      color: white;
-      cursor: pointer;
-    }
-    button:hover {
-      background-color: #45a049;
     }
     .footer {
       font-size: 14px;
       color: #777;
-      margin-top: 20px;
+      margin-top: 30px;
+      text-align: center;
+    }
+    button {
+      padding: 15px 25px;
+      font-size: 20px;
+      margin: 10px;
+      border: none;
+      border-radius: 8px;
+      background-color: #4CAF50;
+      color: white;
+      cursor: pointer;
+      transition: background-color 0.3s;
+    }
+    button:hover {
+      background-color: #45a049;
+    }
+    .alert {
+      background-color: #ffcc00;
+      color: #333;
+      padding: 15px;
+      margin: 20px 0;
+      border-radius: 8px;
+      font-size: 18px;
+      display: none;
+    }
+    .alert.show {
+      display: block;
     }
   </style>
 </head>
@@ -60,6 +75,7 @@
     <h1>التحدي الشخصي</h1>
     <p class="message">أنت في اليوم <span id="days" class="days">0</span></p>
     <p>استمر في التحدي، أنت قوي!</p>
+    <div class="alert" id="alertMessage">لقد أعدت التحدي بنجاح! استمر، أنت قادر!</div>
     <button id="startButton">ابدأ من جديد</button>
     <button id="resetButton">خسرت؟ أعد التحدي</button>
     <div class="footer">
@@ -92,7 +108,7 @@
       startDate = new Date().toISOString();
       localStorage.setItem("startDate", startDate);
       calculateDays();
-      alert("لقد أعادت التحدي بنجاح! استمر, أنت قادر على تخطي هذا!");
+      showAlert("لقد أعدت التحدي بنجاح! استمر، أنت قادر!");
     });
 
     // إعادة بداية التحدي
@@ -102,6 +118,16 @@
       localStorage.setItem("startDate", startDate);
       calculateDays();
     });
+
+    // عرض التنبيه
+    function showAlert(message) {
+      const alertMessage = document.getElementById("alertMessage");
+      alertMessage.textContent = message;
+      alertMessage.classList.add("show");
+      setTimeout(() => {
+        alertMessage.classList.remove("show");
+      }, 3000);
+    }
 
     // تحديث العداد
     setInterval(calculateDays, 86400000);  // تحديث العداد يومياً
