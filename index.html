@@ -1,20 +1,82 @@
-﻿<!DOCTYPE html>
-<html lang="ar">
+<!DOCTYPE html><html lang="ar" dir="rtl">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>تحدي الصمود</title>
-    <link rel="stylesheet" href="style.css">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>تحدي الصمود - صامد</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: #f3f4f6;
+      text-align: center;
+      padding: 20px;
+      color: #1f2937;
+    }
+    h1 {
+      font-size: 2rem;
+      color: #10b981;
+    }
+    #days {
+      font-size: 4rem;
+      margin: 20px 0;
+      color: #ef4444;
+    }
+    button {
+      padding: 10px 20px;
+      font-size: 1rem;
+      border: none;
+      border-radius: 10px;
+      margin: 10px;
+      cursor: pointer;
+    }
+    #startBtn { background-color: #3b82f6; color: white; }
+    #resetBtn { background-color: #ef4444; color: white; }
+    input[type="date"] {
+      padding: 10px;
+      font-size: 1rem;
+      margin: 10px;
+    }
+  </style>
 </head>
 <body>
+  <h1>تحدي الصمود - صامد</h1>
+  <div id="welcome"></div>
+  <p>أدخل تاريخ بداية التحدي:</p>
+  <input type="date" id="startDate">
+  <button id="startBtn">ابدأ التحدي</button>  <div id="tracker" style="display:none;">
+    <h2>لقد صمدت:</h2>
+    <div id="days">0</div>
+    <button id="resetBtn">خسرت، أعد التحدي</button>
+  </div>  <script>
+    const startDateInput = document.getElementById('startDate');
+    const startBtn = document.getElementById('startBtn');
+    const resetBtn = document.getElementById('resetBtn');
+    const tracker = document.getElementById('tracker');
+    const daysDisplay = document.getElementById('days');
 
-    <div class="container">
-        <h1>تحدي الصمود</h1>
-        <p>الأيام منذ بداية التحدي: <span id="counter">0</span> يوم</p>
-        <p id="startDate">تاريخ البدء: غير محدد</p>
-        <button id="resetButton">قمت بالعادة</button>
-    </div>
+    function updateDays() {
+      const start = localStorage.getItem('samidStart');
+      if (start) {
+        const startDate = new Date(start);
+        const now = new Date();
+        const diff = Math.floor((now - startDate) / (1000 * 60 * 60 * 24));
+        daysDisplay.textContent = diff;
+        tracker.style.display = 'block';
+        document.getElementById('welcome').textContent = `تاريخ بدايتك: ${startDate.toLocaleDateString()}`;
+      }
+    }
 
-    <script src="script.js"></script>
-</body>
+    startBtn.onclick = () => {
+      if (startDateInput.value) {
+        localStorage.setItem('samidStart', startDateInput.value);
+        updateDays();
+      }
+    }
+
+    resetBtn.onclick = () => {
+      localStorage.removeItem('samidStart');
+      location.reload();
+    }
+
+    window.onload = updateDays;
+  </script></body>
 </html>
