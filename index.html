@@ -57,12 +57,12 @@
       margin-top: 10px;
       display: block;
     }
-    #viewFriendBtn { background-color: #10b981; color: white; }
-    #viewFriendBtn:hover { background-color: #059669; }
-    #tracker, #friendTracker {
+    #searchBtn { background-color: #10b981; color: white; }
+    #searchBtn:hover { background-color: #059669; }
+    #tracker {
       margin-top: 20px;
     }
-    #days, #friendDays {
+    #days {
       font-size: 3rem;
       font-weight: bold;
       color: #facc15;
@@ -73,136 +73,89 @@
       color: #aaaaaa;
       margin-top: 50px;
     }
+    #lostBtn {
+      display: none;
+      position: absolute;
+      bottom: 10px;
+      left: 10px;
+      background-color: transparent;
+      color: #ff0000;
+      font-size: 1rem;
+      border: none;
+      cursor: pointer;
+    }
   </style>
 </head>
 <body>
   <h1>صامد - تحدي الأبطال</h1>
   <div class="box">
-    <h2>ابدأ رحلتك</h2>
-    <input type="text" id="username" placeholder="اسم المستخدم">
-    <input type="date" id="startDate">
-    <button id="startBtn">انطلاق</button>
+    <h2>أدخل رقم هاتفك</h2>
+    <input type="text" id="phoneNumber" placeholder="رقم الهاتف">
+    <button id="searchBtn">ابحث عن التقدم</button>
   </div>
 
   <div id="tracker" class="box">
-    <h2>يا <span id="userLabel"></span>، أنت صامد منذ:</h2>
+    <h2>أنت صامد منذ:</h2>
     <div id="days">0</div>
     <button id="resetBtn">خسرت؟ اضغط هنا لإعادة التحدي</button>
-    <div id="message"></div>
-  </div>
-
-  <div class="box">
-    <h2>شوف صديقك الصامد</h2>
-    <input type="text" id="friendName" placeholder="اسم صديقك">
-    <button id="viewFriendBtn">اعرض التقدم</button>
-  </div>
-
-  <div id="friendTracker" class="box">
-    <h3>الصديق <span id="friendLabel"></span> صامد منذ:</h3>
-    <div id="friendDays">0</div>
   </div>
 
   <div id="footer">
     <p>صامد - برمجة وتصميم عبدالله علي محمد الدرويش. جميع الحقوق محفوظة.</p>
   </div>
 
+  <!-- زر الخسارة (غير ظاهر) -->
+  <button id="lostBtn" onclick="window.location.href='https://wa.me/967734799935?text=لقد%20خسرت%20وأحتاج%20إعادة%20بياناتي'">لقد خسرت</button>
+
   <script>
-    let localData = JSON.parse(localStorage.getItem("samidUsers")) || {};
-
-    const usernameInput = document.getElementById("username");
-    const startDateInput = document.getElementById("startDate");
-    const startBtn = document.getElementById("startBtn");
-    const resetBtn = document.getElementById("resetBtn");
-    const tracker = document.getElementById("tracker");
-    const userLabel = document.getElementById("userLabel");
-    const daysDisplay = document.getElementById("days");
-    const messageDisplay = document.getElementById("message");
-
-    const friendNameInput = document.getElementById("friendName");
-    const viewFriendBtn = document.getElementById("viewFriendBtn");
-    const friendTracker = document.getElementById("friendTracker");
-    const friendLabel = document.getElementById("friendLabel");
-    const friendDays = document.getElementById("friendDays");
-
-    // إضافة بيانات المستخدم "drwish" الثابتة
-    const drwishStartDate = "2024-11-07";
-    localData["drwish"] = drwishStartDate;
-    localStorage.setItem("samidUsers", JSON.stringify(localData));
-
-    startBtn.onclick = () => {
-      const user = usernameInput.value.trim();
-      const date = startDateInput.value;
-      if (user && date) {
-        localData[user] = date;
-        localStorage.setItem("samidUsers", JSON.stringify(localData));
-        localStorage.setItem("samidCurrentUser", user);
-        showUser(user);
-      }
-    }
-
-    resetBtn.onclick = () => {
-      const currentUser = localStorage.getItem("samidCurrentUser");
-      if (currentUser) {
-        localData[currentUser] = new Date().toISOString().split('T')[0]; // إعادة التحدي من اليوم
-        localStorage.setItem("samidUsers", JSON.stringify(localData));
-        showUser(currentUser); // إعادة عرض التقدم من اليوم الجديد
-        messageDisplay.textContent = "لا مشكلة! كلنا نواجه تحديات. استمر، يمكنك فعلها!";
-      }
-    }
-
-    function showUser(user) {
-      const startDate = new Date(localData[user]);
-      const now = new Date();
-      const diff = Math.floor((now - startDate) / (1000 * 60 * 60 * 24));
-      userLabel.textContent = user;
-      daysDisplay.textContent = diff;
-      tracker.style.display = 'block';
-      showMessage(diff);
-    }
-
-    function showFriend(friend) {
-      if (localData[friend]) {
-        const start = new Date(localData[friend]);
-        const now = new Date();
-        const days = Math.floor((now - start) / (1000 * 60 * 60 * 24));
-        friendLabel.textContent = friend;
-        friendDays.textContent = days;
-        friendTracker.style.display = 'block';
-      } else {
-        alert("لم يتم العثور على هذا المستخدم.");
-      }
-    }
-
-    function showMessage(days) {
-      if (days >= 10 && days < 30) {
-        messageDisplay.textContent = "مبروك! أنت تخطيت بداية التحدي! هذا فقط بداية رحلة عظيمة، استمر!";
-      } else if (days >= 30 && days < 50) {
-        messageDisplay.textContent = "يا بطل! 30 يومًا بدون تراجع! أنت في طريقك لتحقيق أشياء عظيمة!";
-      } else if (days >= 50 && days < 100) {
-        messageDisplay.textContent = "واو! أنت الآن فوق القمة! 50 يومًا من القوة والصمود! فخورين بك!";
-      } else if (days >= 100 && days < 200) {
-        messageDisplay.textContent = "100 يوم! أنت فعلاً أسطورة! لا يوقفك شيء الآن! واصل التفوق!";
-      } else if (days >= 200 && days < 365) {
-        messageDisplay.textContent = "لقد دخلت مرحلة الاستثنائية! 200 يوم من الإرادة التي لا تهزم! أنت ملهم!";
-      } else if (days >= 365) {
-        messageDisplay.textContent = "عام كامل! تخطيت المستحيل! أنت الآن واحد من الأكثر قوة وصمود على وجه الأرض! العالم كله أمامك!";
-      }
-    }
-
-    viewFriendBtn.onclick = () => {
-      const friend = friendNameInput.value.trim();
-      if (friend) showFriend(friend);
-    }
-
-    window.onload = () => {
-      const currentUser = localStorage.getItem("samidCurrentUser");
-      if (currentUser && localData[currentUser]) {
-        showUser(currentUser);
-      }
-      // تحديث العداد بشكل دوري
-      setInterval(updateDays, 1000 * 60 * 60 * 24); // تحديث يوميًا (كل 24 ساعة)
+    // إضافة بيانات المستخدمين وبدء العداد
+    const usersData = {
+      "778999688": "2024-11-07",
+      "770000000": "2025-01-01",
+      "771111111": "2025-01-01",
+      "772222222": "2025-01-01",
+      "773333333": "2025-01-01",
+      "774444444": "2025-01-01",
+      "775555555": "2025-01-01",
+      "776666666": "2025-01-01",
+      "777777777": "2025-01-01",
+      "778888888": "2025-01-01",
+      "779999999": "2025-01-01",
+      "778109077": "2025-01-01",
+      "734799935": "2024-11-07"
     };
 
-    function updateDays() {
-      const currentUser = localStorage.getItem("samidCurrentUser");
-      if
+    const phoneInput = document.getElementById("phoneNumber");
+    const searchBtn = document.getElementById("searchBtn");
+    const resetBtn = document.getElementById("resetBtn");
+    const tracker = document.getElementById("tracker");
+    const daysDisplay = document.getElementById("days");
+    const lostBtn = document.getElementById("lostBtn");
+
+    searchBtn.onclick = () => {
+      const phone = phoneInput.value.trim();
+      if (usersData[phone]) {
+        const startDate = new Date(usersData[phone]);
+        const now = new Date();
+        const diff = Math.floor((now - startDate) / (1000 * 60 * 60 * 24)) + 1; // العداد يبدأ من 1
+        daysDisplay.textContent = diff;
+        tracker.style.display = 'block';
+        lostBtn.style.display = 'block'; // إظهار زر الخسارة
+        resetBtn.onclick = () => {
+          // إرسال رسالة على واتساب عند الضغط على زر "خسرت"
+          window.location.href = `https://wa.me/967734799935?text=لقد%20خسرت%20وأحتاج%20إعادة%20بياناتي%20لرقم%20${phone}`;
+        };
+      } else {
+        alert("لم يتم العثور على هذا الرقم.");
+      }
+    };
+
+    // زر "لقد خسرت"
+    lostBtn.onclick = () => {
+      const phone = phoneInput.value.trim();
+      window.location.href = `https://wa.me/967734799935?text=لقد%20خسرت%20وأحتاج%20إعادة%20بياناتي%20لرقم%20${phone}`;
+    };
+
+  </script>
+</body>
+</html>
