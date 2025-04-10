@@ -1,13 +1,16 @@
-<!DOCTYPE html><html lang="ar" dir="rtl">
+# Let's create a complex and detailed form for the user to fill, including psychological, academic, and social factors for a more accurate estimate of their grade.
+
+# This is a conceptual solution, illustrating the structure and flow of the questions.
+
+html_code = """
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>حاسبة معدل الثانوية العامة - الذكاء الاصطناعي</title>
+  <title>حاسبة معدل الثانوية العامة المتقدمة</title>
   <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;700&display=swap" rel="stylesheet">
   <style>
-    * {
-      box-sizing: border-box;
-    }
     body {
       font-family: 'Tajawal', sans-serif;
       background: linear-gradient(145deg, #f0f4f8, #ffffff);
@@ -16,28 +19,33 @@
       color: #1f2937;
     }
     .container {
-      max-width: 900px;
-      margin: 60px auto;
-      background: #fff;
+      max-width: 1000px;
+      margin: 40px auto;
       padding: 40px;
-      border-radius: 20px;
+      background: #fff;
+      border-radius: 16px;
       box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
-      transition: all 0.3s ease-in-out;
     }
-    h1, h2 {
+    h1 {
       text-align: center;
-      color: #0f172a;
+      color: #1d4ed8;
       margin-bottom: 30px;
+      font-weight: 700;
     }
     .question {
       margin-bottom: 40px;
       padding: 20px;
       border-bottom: 1px solid #e2e8f0;
     }
+    .question h2 {
+      color: #0f172a;
+      font-weight: bold;
+      margin-bottom: 20px;
+    }
     .options button {
       display: block;
       width: 100%;
-      padding: 14px 16px;
+      padding: 14px;
       margin: 10px 0;
       font-size: 16px;
       background-color: #e0f2fe;
@@ -105,55 +113,72 @@
 </head>
 <body>
   <div class="container">
-    <h1>حاسبة معدل الثانوية العامة الذكية</h1>
+    <h1>حاسبة معدل الثانوية العامة الذكية والمتقدمة</h1>
     <div id="app"></div>
-  </div>  <script>
+  </div>
+
+  <script>
     const questions = [
       {
-        id: 'mood',
-        text: 'كيف كان شعورك العام أثناء فترة الامتحانات؟',
-        options: ['مرتاح وواثق', 'متوتر بس مسيطر', 'ضايع شوي', 'مكتئب أو مرهق نفسيًا', 'ما كنت حاس بأي شي']
+        id: 'confidence',
+        text: 'كيف تقيم مستوى ثقتك بنفسك في الاختبارات؟',
+        options: ['واثق جدًا', 'ممتاز', 'جيد', 'قليل الثقة', 'غير واثق'],
       },
       {
-        id: 'sleep',
-        text: 'كيف كان نومك خلال فترة الامتحانات؟',
-        options: ['منتظم جدًا', 'جيد نسبيًا', 'مضطرب شوي', 'ما كنت أنام', 'مش فاكر حتى']
+        id: 'stress',
+        text: 'مستوى التوتر أثناء الامتحانات؟',
+        options: ['بدون توتر', 'توتر متوسط', 'توتر شديد', 'مستوى عالي من التوتر'],
       },
       {
-        id: 'studyHabits',
-        text: 'هل كنت تذاكر بانتظام طول السنة؟',
-        options: ['نعم بشكل يومي', 'أغلب الأيام', 'فقط أيام المراجعة', 'قبل الامتحان بس', 'ولا يوم فعليًا']
+        id: 'studyRoutine',
+        text: 'هل كان لديك روتين دراسي منتظم؟',
+        options: ['نعم، بشكل يومي', 'أغلب الأوقات', 'بعض الأوقات', 'لا أذكر أنني كنت أذاكر بانتظام'],
       },
       {
-        id: 'arabicGrade',
-        text: 'توقّعك لمادة اللغة العربية؟ (أقل وأعلى درجة)',
-        type: 'range'
+        id: 'socialSupport',
+        text: 'ما هو مستوى الدعم الاجتماعي الذي تلقيته أثناء فترة الدراسة؟',
+        options: ['دعم كامل من العائلة والأصدقاء', 'دعم جزئي', 'دعم بسيط', 'لا يوجد دعم'],
       },
       {
-        id: 'mathGrade',
-        text: 'توقّعك لمادة الرياضيات (تفاضل + جبر وهندسة = مادة واحدة)',
-        type: 'range'
+        id: 'materialPreparation',
+        text: 'كيف كانت استعداداتك للمراجعة؟',
+        options: ['مراجعة كاملة لجميع المواد', 'مراجعة معظم المواد', 'مراجعة بعض المواد', 'لم أراجع بشكل جيد'],
       },
       {
-        id: 'quranGrade',
-        text: 'توقّعك لمادة القرآن الكريم؟',
-        type: 'range'
+        id: 'sleepQuality',
+        text: 'كيف كان نومك أثناء فترة الامتحانات؟',
+        options: ['نوم جيد جداً', 'نوم مقبول', 'نوم متقطع', 'نوم قليل جداً'],
       },
       {
-        id: 'islamicGrade',
-        text: 'توقّعك لمادة التربية الإسلامية؟',
-        type: 'range'
+        id: 'gradePredictionMath',
+        text: 'توقعك لدرجة الرياضيات (تفاضل + جبر وهندسة)؟ (أقل وأعلى درجة)',
+        type: 'range',
       },
       {
-        id: 'chemistryGrade',
-        text: 'توقّعك لمادة الكيمياء؟',
-        type: 'range'
+        id: 'gradePredictionArabic',
+        text: 'توقعك لدرجة اللغة العربية؟ (أقل وأعلى درجة)',
+        type: 'range',
       },
       {
-        id: 'physicsGrade',
-        text: 'توقّعك لمادة الفيزياء؟',
-        type: 'range'
-      }
+        id: 'gradePredictionPhysics',
+        text: 'توقعك لدرجة الفيزياء؟ (أقل وأعلى درجة)',
+        type: 'range',
+      },
+      {
+        id: 'gradePredictionChemistry',
+        text: 'توقعك لدرجة الكيمياء؟ (أقل وأعلى درجة)',
+        type: 'range',
+      },
+      {
+        id: 'gradePredictionIslamic',
+        text: 'توقعك لدرجة التربية الإسلامية؟ (أقل وأعلى درجة)',
+        type: 'range',
+      },
+      {
+        id: 'gradePredictionQuran',
+        text: 'توقعك لدرجة القرآن الكريم؟ (أقل وأعلى درجة)',
+        type: 'range',
+      },
     ];
 
     let current = 0;
@@ -162,8 +187,7 @@
     function renderQuestion() {
       const app = document.getElementById('app');
       const q = questions[current];
-      let html = `<div class="question">
-        <h2>${q.text}</h2>`;
+      let html = `<div class="question"><h2>${q.text}</h2>`;
 
       if (q.options) {
         html += '<div class="options">';
@@ -178,10 +202,9 @@
           <button onclick="saveRange('${q.id}')">التالي</button>
         </div>`;
       }
-
       html += '</div><div class="nav-buttons">';
       if (current > 0) html += `<button onclick="prev()">السابق</button>`;
-      if (current < questions.length - 1) html += `<button onclick="next()">تخطي</button>`;
+      if (current < questions.length - 1) html += `<button onclick="next()">التالي</button>`;
       html += '</div>';
       app.innerHTML = html;
     }
@@ -198,7 +221,7 @@
         answers[id] = { min, max };
         next();
       } else {
-        alert('يرجى إدخال قيم صحيحة.');
+        alert('يرجى إدخال قيم صحيحة');
       }
     }
 
@@ -237,5 +260,9 @@
     }
 
     renderQuestion();
-  </script></body>
+  </script>
+</body>
 </html>
+"""
+
+html_code
