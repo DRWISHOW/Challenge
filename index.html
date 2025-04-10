@@ -48,6 +48,8 @@
     }
     #searchBtn { background-color: #10b981; color: white; }
     #searchBtn:hover { background-color: #059669; }
+    #resetBtn { background-color: #ef4444; color: white; }
+    #resetBtn:hover { background-color: #dc2626; }
     #tracker {
       margin-top: 20px;
     }
@@ -82,6 +84,7 @@
     <div id="days">0</div>
     <div id="message"></div>
     <h3 id="userName">الاسم: </h3>
+    <button id="resetBtn">خسرت، أعد تعيين العداد</button>
   </div>
 
   <div id="footer">
@@ -89,7 +92,6 @@
   </div>
 
   <script>
-    // قاعدة بيانات الأرقام والأسماء
     const usersData = {
       "778999688": { name: "عبدالله الدرويش", startDate: "2024-11-07" },
       "778321000": { name: "طه الجعدبي", startDate: "2025-04-11" },
@@ -112,18 +114,18 @@
     const daysDisplay = document.getElementById("days");
     const messageDisplay = document.getElementById("message");
     const userNameDisplay = document.getElementById("userName");
+    const resetBtn = document.getElementById("resetBtn");
 
-    // قراءة البيانات المخزنة في localStorage عند تحميل الصفحة
     const storedPhone = localStorage.getItem("storedPhone");
     if (storedPhone) {
       phoneInput.value = storedPhone;
-      searchForUser(storedPhone); // إذا كان هناك رقم هاتف مخزن سابقًا، يتم العثور على المستخدم مباشرة
+      searchForUser(storedPhone);
     }
 
     searchBtn.onclick = () => {
       const phone = phoneInput.value.trim();
       if (phone) {
-        localStorage.setItem("storedPhone", phone); // حفظ رقم الهاتف في localStorage
+        localStorage.setItem("storedPhone", phone);
         searchForUser(phone);
       }
     };
@@ -132,7 +134,7 @@
       if (usersData[phone]) {
         const startDate = new Date(usersData[phone].startDate);
         const now = new Date();
-        const diff = Math.floor((now - startDate) / (1000 * 60 * 60 * 24)) + 1; // العداد يبدأ من 1
+        const diff = Math.floor((now - startDate) / (1000 * 60 * 60 * 24)) + 1;
         daysDisplay.textContent = diff;
         userNameDisplay.textContent = "الاسم: " + usersData[phone].name;
         tracker.style.display = 'block';
@@ -142,7 +144,6 @@
       }
     }
 
-    // إظهار الرسائل التحفيزية بناءً على عدد الأيام
     function showMotivation(days) {
       if (days < 10) {
         messageDisplay.textContent = "أنت في البداية، لا تستسلم! الطريق طويل لكنك قادر على النجاح.";
@@ -160,6 +161,18 @@
         messageDisplay.textContent = "عام كامل! تخطيت المستحيل! أنت الآن أسطورة الصمود!";
       }
     }
+
+    resetBtn.onclick = () => {
+      const phone = phoneInput.value.trim();
+      if (phone && usersData[phone]) {
+        const name = usersData[phone].name;
+        const message = `السلام عليكم يا درويش، أنا ${name}، رقمي هو ${phone}، وقد خسرت للأسف وأحتاج لإعادة تعيين العداد.`;
+        const encodedMessage = encodeURIComponent(message);
+        window.open(`https://wa.me/967734799935?text=${encodedMessage}`, "_blank");
+      } else {
+        alert("أدخل رقمك أولًا للمتابعة.");
+      }
+    };
   </script>
 </body>
 </html>
