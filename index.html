@@ -1,268 +1,175 @@
-# Let's create a complex and detailed form for the user to fill, including psychological, academic, and social factors for a more accurate estimate of their grade.
-
-# This is a conceptual solution, illustrating the structure and flow of the questions.
-
-html_code = """
 <!DOCTYPE html>
-<html lang="ar" dir="rtl">
+<html lang="ar">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>حاسبة معدل الثانوية العامة المتقدمة</title>
-  <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;700&display=swap" rel="stylesheet">
-  <style>
-    body {
-      font-family: 'Tajawal', sans-serif;
-      background: linear-gradient(145deg, #f0f4f8, #ffffff);
-      margin: 0;
-      padding: 0;
-      color: #1f2937;
-    }
-    .container {
-      max-width: 1000px;
-      margin: 40px auto;
-      padding: 40px;
-      background: #fff;
-      border-radius: 16px;
-      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
-    }
-    h1 {
-      text-align: center;
-      color: #1d4ed8;
-      margin-bottom: 30px;
-      font-weight: 700;
-    }
-    .question {
-      margin-bottom: 40px;
-      padding: 20px;
-      border-bottom: 1px solid #e2e8f0;
-    }
-    .question h2 {
-      color: #0f172a;
-      font-weight: bold;
-      margin-bottom: 20px;
-    }
-    .options button {
-      display: block;
-      width: 100%;
-      padding: 14px;
-      margin: 10px 0;
-      font-size: 16px;
-      background-color: #e0f2fe;
-      border: 2px solid #0284c7;
-      border-radius: 12px;
-      cursor: pointer;
-      color: #0c4a6e;
-      font-weight: bold;
-      transition: all 0.2s ease-in-out;
-    }
-    .options button:hover {
-      background-color: #bae6fd;
-    }
-    .range-inputs {
-      display: flex;
-      justify-content: space-between;
-      gap: 10px;
-      margin-top: 20px;
-    }
-    .range-inputs input {
-      width: 100%;
-      padding: 12px;
-      border: 2px solid #cbd5e1;
-      border-radius: 10px;
-      font-size: 16px;
-    }
-    .range-inputs button {
-      margin-top: 20px;
-      width: 100%;
-      background-color: #10b981;
-      color: white;
-      padding: 14px;
-      border: none;
-      border-radius: 12px;
-      font-size: 16px;
-      font-weight: bold;
-      cursor: pointer;
-    }
-    .nav-buttons {
-      display: flex;
-      justify-content: space-between;
-      margin-top: 40px;
-    }
-    .nav-buttons button {
-      padding: 12px 24px;
-      font-size: 16px;
-      border: none;
-      background-color: #1d4ed8;
-      color: white;
-      border-radius: 10px;
-      cursor: pointer;
-    }
-    .result {
-      margin-top: 40px;
-      background: #dcfce7;
-      border: 1px solid #86efac;
-      padding: 25px;
-      border-radius: 12px;
-      font-size: 20px;
-      text-align: center;
-      color: #166534;
-      font-weight: bold;
-    }
-  </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>توقع المعدل الدراسي</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: #f4f4f9;
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            color: #333;
+        }
+        header {
+            background-color: #34495e;
+            color: white;
+            padding: 20px;
+            text-align: center;
+            font-size: 2em;
+        }
+        .container {
+            max-width: 800px;
+            margin: 50px auto;
+            padding: 20px;
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+        }
+        h2 {
+            color: #2c3e50;
+            margin-bottom: 20px;
+        }
+        .question {
+            margin-bottom: 20px;
+            font-size: 1.1em;
+        }
+        .options {
+            margin-top: 10px;
+        }
+        .options label {
+            display: block;
+            margin: 5px 0;
+            font-size: 1em;
+            padding: 8px;
+            background-color: #ecf0f1;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+        .options label:hover {
+            background-color: #bdc3c7;
+        }
+        .submit-btn {
+            width: 100%;
+            padding: 15px;
+            background-color: #2ecc71;
+            color: white;
+            font-size: 1.2em;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+        .submit-btn:hover {
+            background-color: #27ae60;
+        }
+        .footer {
+            background-color: #34495e;
+            color: white;
+            text-align: center;
+            padding: 10px;
+            margin-top: 20px;
+            font-size: 0.9em;
+        }
+    </style>
 </head>
 <body>
-  <div class="container">
-    <h1>حاسبة معدل الثانوية العامة الذكية والمتقدمة</h1>
-    <div id="app"></div>
-  </div>
 
-  <script>
-    const questions = [
-      {
-        id: 'confidence',
-        text: 'كيف تقيم مستوى ثقتك بنفسك في الاختبارات؟',
-        options: ['واثق جدًا', 'ممتاز', 'جيد', 'قليل الثقة', 'غير واثق'],
-      },
-      {
-        id: 'stress',
-        text: 'مستوى التوتر أثناء الامتحانات؟',
-        options: ['بدون توتر', 'توتر متوسط', 'توتر شديد', 'مستوى عالي من التوتر'],
-      },
-      {
-        id: 'studyRoutine',
-        text: 'هل كان لديك روتين دراسي منتظم؟',
-        options: ['نعم، بشكل يومي', 'أغلب الأوقات', 'بعض الأوقات', 'لا أذكر أنني كنت أذاكر بانتظام'],
-      },
-      {
-        id: 'socialSupport',
-        text: 'ما هو مستوى الدعم الاجتماعي الذي تلقيته أثناء فترة الدراسة؟',
-        options: ['دعم كامل من العائلة والأصدقاء', 'دعم جزئي', 'دعم بسيط', 'لا يوجد دعم'],
-      },
-      {
-        id: 'materialPreparation',
-        text: 'كيف كانت استعداداتك للمراجعة؟',
-        options: ['مراجعة كاملة لجميع المواد', 'مراجعة معظم المواد', 'مراجعة بعض المواد', 'لم أراجع بشكل جيد'],
-      },
-      {
-        id: 'sleepQuality',
-        text: 'كيف كان نومك أثناء فترة الامتحانات؟',
-        options: ['نوم جيد جداً', 'نوم مقبول', 'نوم متقطع', 'نوم قليل جداً'],
-      },
-      {
-        id: 'gradePredictionMath',
-        text: 'توقعك لدرجة الرياضيات (تفاضل + جبر وهندسة)؟ (أقل وأعلى درجة)',
-        type: 'range',
-      },
-      {
-        id: 'gradePredictionArabic',
-        text: 'توقعك لدرجة اللغة العربية؟ (أقل وأعلى درجة)',
-        type: 'range',
-      },
-      {
-        id: 'gradePredictionPhysics',
-        text: 'توقعك لدرجة الفيزياء؟ (أقل وأعلى درجة)',
-        type: 'range',
-      },
-      {
-        id: 'gradePredictionChemistry',
-        text: 'توقعك لدرجة الكيمياء؟ (أقل وأعلى درجة)',
-        type: 'range',
-      },
-      {
-        id: 'gradePredictionIslamic',
-        text: 'توقعك لدرجة التربية الإسلامية؟ (أقل وأعلى درجة)',
-        type: 'range',
-      },
-      {
-        id: 'gradePredictionQuran',
-        text: 'توقعك لدرجة القرآن الكريم؟ (أقل وأعلى درجة)',
-        type: 'range',
-      },
-    ];
+    <header>
+        حساب التوقعات الدراسية
+    </header>
 
-    let current = 0;
-    const answers = {};
+    <div class="container">
+        <h2>الأسئلة النفسية والأكاديمية</h2>
 
-    function renderQuestion() {
-      const app = document.getElementById('app');
-      const q = questions[current];
-      let html = `<div class="question"><h2>${q.text}</h2>`;
+        <!-- السؤال الأول - أكاديمي -->
+        <div class="question">
+            <p>كم عدد الساعات التي قضيتها في التحضير لامتحان الرياضيات؟</p>
+            <div class="options">
+                <input type="radio" id="math1" name="math_time" value="1"><label for="math1">0-2 ساعات</label>
+                <input type="radio" id="math2" name="math_time" value="2"><label for="math2">3-5 ساعات</label>
+                <input type="radio" id="math3" name="math_time" value="3"><label for="math3">6-10 ساعات</label>
+                <input type="radio" id="math4" name="math_time" value="4"><label for="math4">أكثر من 10 ساعات</label>
+            </div>
+        </div>
 
-      if (q.options) {
-        html += '<div class="options">';
-        q.options.forEach(opt => {
-          html += `<button onclick="answer('${q.id}', '${opt}')">${opt}</button>`;
-        });
-        html += '</div>';
-      } else if (q.type === 'range') {
-        html += `<div class="range-inputs">
-          <input type="number" placeholder="أقل درجة" id="${q.id}_min">
-          <input type="number" placeholder="أعلى درجة" id="${q.id}_max">
-          <button onclick="saveRange('${q.id}')">التالي</button>
-        </div>`;
-      }
-      html += '</div><div class="nav-buttons">';
-      if (current > 0) html += `<button onclick="prev()">السابق</button>`;
-      if (current < questions.length - 1) html += `<button onclick="next()">التالي</button>`;
-      html += '</div>';
-      app.innerHTML = html;
-    }
+        <!-- السؤال الثاني - أكاديمي -->
+        <div class="question">
+            <p>كيف تقييم مستوى الفهم لديك لموضوع التفاضل والتكامل؟</p>
+            <div class="options">
+                <input type="radio" id="calc1" name="calculus" value="1"><label for="calc1">ضعيف جدًا</label>
+                <input type="radio" id="calc2" name="calculus" value="2"><label for="calc2">مقبول</label>
+                <input type="radio" id="calc3" name="calculus" value="3"><label for="calc3">جيد</label>
+                <input type="radio" id="calc4" name="calculus" value="4"><label for="calc4">ممتاز</label>
+            </div>
+        </div>
 
-    function answer(id, value) {
-      answers[id] = value;
-      next();
-    }
+        <!-- السؤال الثالث - نفسي -->
+        <div class="question">
+            <p>كيف تقيم مستوى التوتر والقلق لديك قبل الامتحانات؟</p>
+            <div class="options">
+                <input type="radio" id="stress1" name="stress" value="1"><label for="stress1">عالي جدًا</label>
+                <input type="radio" id="stress2" name="stress" value="2"><label for="stress2">متوسط</label>
+                <input type="radio" id="stress3" name="stress" value="3"><label for="stress3">قليل</label>
+                <input type="radio" id="stress4" name="stress" value="4"><label for="stress4">لا يوجد توتر</label>
+            </div>
+        </div>
 
-    function saveRange(id) {
-      const min = parseFloat(document.getElementById(id + '_min').value);
-      const max = parseFloat(document.getElementById(id + '_max').value);
-      if (!isNaN(min) && !isNaN(max)) {
-        answers[id] = { min, max };
-        next();
-      } else {
-        alert('يرجى إدخال قيم صحيحة');
-      }
-    }
+        <!-- السؤال الرابع - نفسي -->
+        <div class="question">
+            <p>هل لديك خطة يومية للمراجعة أو تفضل المراجعة في اللحظات الأخيرة؟</p>
+            <div class="options">
+                <input type="radio" id="plan1" name="study_plan" value="1"><label for="plan1">لا أملك خطة ثابتة</label>
+                <input type="radio" id="plan2" name="study_plan" value="2"><label for="plan2">أراجع قبل الامتحانات فقط</label>
+                <input type="radio" id="plan3" name="study_plan" value="3"><label for="plan3">أراجع باستمرار طوال العام</label>
+            </div>
+        </div>
 
-    function next() {
-      if (current < questions.length - 1) {
-        current++;
-        renderQuestion();
-      } else {
-        showResult();
-      }
-    }
+        <!-- السؤال الخامس - اجتماعي -->
+        <div class="question">
+            <p>هل يوجد لديك دعم اجتماعي جيد خلال فترة الامتحانات؟</p>
+            <div class="options">
+                <input type="radio" id="support1" name="social_support" value="1"><label for="support1">لا يوجد دعم</label>
+                <input type="radio" id="support2" name="social_support" value="2"><label for="support2">دعم جزئي</label>
+                <input type="radio" id="support3" name="social_support" value="3"><label for="support3">دعم كافي</label>
+                <input type="radio" id="support4" name="social_support" value="4"><label for="support4">دعم ممتاز</label>
+            </div>
+        </div>
 
-    function prev() {
-      if (current > 0) {
-        current--;
-        renderQuestion();
-      }
-    }
+        <!-- ارسال الإجابات -->
+        <button class="submit-btn" onclick="calculateResult()">احسب معدلك المتوقع</button>
+    </div>
 
-    function showResult() {
-      const app = document.getElementById('app');
-      let html = '<h2>النتيجة التقريبية لمعدلك:</h2>';
-      let total = 0;
-      let count = 0;
-      for (let key in answers) {
-        const val = answers[key];
-        if (typeof val === 'object') {
-          const avg = (parseFloat(val.min) + parseFloat(val.max)) / 2;
-          total += avg;
-          count++;
+    <div class="footer">
+        جميع الحقوق محفوظة © 2025
+    </div>
+
+    <script>
+        function calculateResult() {
+            let mathTime = document.querySelector('input[name="math_time"]:checked')?.value;
+            let calculus = document.querySelector('input[name="calculus"]:checked')?.value;
+            let stress = document.querySelector('input[name="stress"]:checked')?.value;
+            let studyPlan = document.querySelector('input[name="study_plan"]:checked')?.value;
+            let socialSupport = document.querySelector('input[name="social_support"]:checked')?.value;
+
+            if (mathTime && calculus && stress && studyPlan && socialSupport) {
+                let totalScore = 0;
+
+                totalScore += parseInt(mathTime);
+                totalScore += parseInt(calculus);
+                totalScore += parseInt(stress);
+                totalScore += parseInt(studyPlan);
+                totalScore += parseInt(socialSupport);
+
+                alert("معدل التوقعات: " + totalScore);
+            } else {
+                alert("يرجى الإجابة على جميع الأسئلة.");
+            }
         }
-      }
-      const avg = total / count;
-      html += `<div class="result">${avg.toFixed(2)} / 100</div>`;
-      app.innerHTML = html;
-    }
+    </script>
 
-    renderQuestion();
-  </script>
 </body>
 </html>
-"""
-
-html_code
