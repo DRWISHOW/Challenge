@@ -69,12 +69,16 @@
       color: #aaaaaa;
       margin-top: 50px;
     }
+    ol {
+      text-align: right;
+      margin-right: 20px;
+    }
   </style>
 </head>
 <body>
   <h1>كُن صامد</h1>
   <div class="box">
-    <h2>ابدأ رحلتك!</h2>
+    <h2>أدخل رقم هاتفك</h2>
     <input type="text" id="phoneNumber" placeholder="رقم الهاتف">
     <button id="searchBtn">ابحث عن التقدم</button>
   </div>
@@ -84,11 +88,27 @@
     <div id="days">0</div>
     <div id="message"></div>
     <h3 id="userName">الاسم: </h3>
+    <h3 id="pointsDisplay">النقاط: </h3>
     <button id="resetBtn">خسرت، أعد تعيين العداد</button>
+  </div>
+
+  <div class="box">
+    <h2>أفضل 3 صامدين</h2>
+    <ol id="topSurvivors"></ol>
+  </div>
+
+  <div class="box">
+    <h2>أكثر 3 حصدوا نقاط</h2>
+    <ol id="topPoints"></ol>
   </div>
 
   <div id="footer">
     <p>صامد - برمجة وتصميم عبدالله علي محمد الدرويش - جميع الحقوق محفوظة.</p>
+    <div style="margin-top: 10px;">
+      <a href="https://wa.me/967734799935?text=أرغب%20في%20التسجيل%20في%20موقع%20صامد" target="_blank" style="font-size: 0.9rem; color: #10b981; text-decoration: none;">
+        هل ترغب في التسجيل معنا؟ تواصل معنا على واتساب
+      </a>
+    </div>
   </div>
 
   <script>
@@ -114,6 +134,7 @@
     const daysDisplay = document.getElementById("days");
     const messageDisplay = document.getElementById("message");
     const userNameDisplay = document.getElementById("userName");
+    const pointsDisplay = document.getElementById("pointsDisplay");
     const resetBtn = document.getElementById("resetBtn");
 
     const storedPhone = localStorage.getItem("storedPhone");
@@ -130,15 +151,27 @@
       }
     };
 
+    function calculatePoints(days) {
+      return Math.floor(days / 10);
+    }
+
     function searchForUser(phone) {
       if (usersData[phone]) {
         const startDate = new Date(usersData[phone].startDate);
         const now = new Date();
         const diff = Math.floor((now - startDate) / (1000 * 60 * 60 * 24)) + 1;
+        const points = calculatePoints(diff);
+
         daysDisplay.textContent = diff;
         userNameDisplay.textContent = "الاسم: " + usersData[phone].name;
+        pointsDisplay.textContent = "النقاط: " + points;
+        usersData[phone].points = points;
+
         tracker.style.display = 'block';
         showMotivation(diff);
+        updateStats();
+
+        alert(`أهلاً بك، لقد جمعت ${points} نقطة حتى الآن، استمر يا بطل!`);
       } else {
         alert("لم يتم العثور على هذا الرقم.. قل للدرويش يسجلك");
       }
@@ -147,19 +180,33 @@
     function showMotivation(days) {
       if (days < 10) {
         messageDisplay.textContent = "أنت في البداية، لا تستسلم! الطريق طويل لكنك قادر على النجاح.";
-      } else if (days >= 10 && days < 30) {
+      } else if (days < 30) {
         messageDisplay.textContent = "لقد مررت بعشرة أيام! رائع، أنت على الطريق الصحيح.";
-      } else if (days >= 30 && days < 50) {
+      } else if (days < 50) {
         messageDisplay.textContent = "أنت بطل! 30 يومًا بدون تراجع! استمر في التقدم.";
-      } else if (days >= 50 && days < 100) {
+      } else if (days < 100) {
         messageDisplay.textContent = "50 يومًا من الصمود! أنت تظهر قوة غير عادية، فخورون بك.";
-      } else if (days >= 100 && days < 200) {
+      } else if (days < 200) {
         messageDisplay.textContent = "100 يوم! لم يعد هناك شيء يقف في طريقك، استمر في مسيرتك!";
-      } else if (days >= 200 && days < 365) {
+      } else if (days < 365) {
         messageDisplay.textContent = "أنت شخص استثنائي! 200 يوم من العزيمة والإرادة.";
-      } else if (days >= 365) {
+      } else {
         messageDisplay.textContent = "عام كامل! تخطيت المستحيل! أنت الآن أسطورة الصمود!";
       }
+    }
+
+    function updateStats() {
+      const userList = Object.entries(usersData).map(([phone, data]) => {
+        const days = Math.floor((new Date() - new Date(data.startDate)) / (1000 * 60 * 60 * 24)) + 1;
+        const points = calculatePoints(days);
+        return { name: data.name, days, points };
+      });
+
+      const topSurvivors = [...userList].sort((a, b) => b.days - a.days).slice(0, 3);
+      const topPoints = [...userList].sort((a, b) => b.points - a.points).slice(0, 3);
+
+      document.getElementById("topSurvivors").innerHTML = topSurvivors.map(u => `<li>${u.name} - ${u.days} يوم</li>`).join('');
+      document.getElementById("topPoints").innerHTML = topPoints.map(u => `<li>${u.name} - ${u.points} نقاط</li>`).join('');
     }
 
     resetBtn.onclick = () => {
@@ -173,6 +220,8 @@
         alert("أدخل رقمك أولًا للمتابعة.");
       }
     };
+
+    updateStats();
   </script>
 </body>
 </html>
