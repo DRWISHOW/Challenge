@@ -1,232 +1,245 @@
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>صامد - عداد التحدي</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>حاسبة معدل الثانوية العامة - الذكاء الاصطناعي</title>
+  <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;700&display=swap" rel="stylesheet">
   <style>
-    @import url('https://fonts.googleapis.com/css2?family=Cairo:wght@500;700&display=swap');
-    body {
-      font-family: 'Cairo', sans-serif;
-      background: linear-gradient(to right, #0f2027, #203a43, #2c5364);
-      color: #ffffff;
-      padding: 20px;
-      text-align: center;
+    * {
+      box-sizing: border-box;
     }
-    h1 {
-      color: #10b981;
-      font-size: 2.5rem;
+    body {
+      font-family: 'Tajawal', sans-serif;
+      background: linear-gradient(145deg, #f0f4f8, #ffffff);
+      margin: 0;
+      padding: 0;
+      color: #1f2937;
+    }
+    .container {
+      max-width: 900px;
+      margin: 60px auto;
+      background: #fff;
+      padding: 40px;
+      border-radius: 20px;
+      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+      transition: all 0.3s ease-in-out;
+    }
+    h1, h2 {
+      text-align: center;
+      color: #0f172a;
       margin-bottom: 30px;
     }
-    .box {
+    .question {
+      margin-bottom: 40px;
       padding: 20px;
-      margin: 20px auto;
-      max-width: 400px;
-      background-color: rgba(255, 255, 255, 0.05);
-      border-radius: 20px;
-      backdrop-filter: blur(8px);
-      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+      border-bottom: 1px solid #e2e8f0;
     }
-    input[type="text"], input[type="date"] {
-      width: 90%;
-      padding: 12px;
-      font-size: 1rem;
+    .options button {
+      display: block;
+      width: 100%;
+      padding: 14px 16px;
+      margin: 10px 0;
+      font-size: 16px;
+      background-color: #e0f2fe;
+      border: 2px solid #0284c7;
       border-radius: 12px;
-      border: none;
-      margin-top: 10px;
-      margin-bottom: 10px;
-      background-color: #f9fafb;
-    }
-    button {
-      padding: 12px 20px;
-      font-size: 1rem;
-      border-radius: 12px;
-      border: none;
       cursor: pointer;
-      margin-top: 10px;
-      transition: background-color 0.3s;
-    }
-    #searchBtn { background-color: #10b981; color: white; }
-    #searchBtn:hover { background-color: #059669; }
-    #resetBtn { background-color: #ef4444; color: white; }
-    #resetBtn:hover { background-color: #dc2626; }
-    #tracker {
-      margin-top: 20px;
-    }
-    #days {
-      font-size: 3rem;
+      color: #0c4a6e;
       font-weight: bold;
-      color: #facc15;
-      margin-top: 10px;
+      transition: all 0.2s ease-in-out;
     }
-    #message {
-      font-size: 1.2rem;
+    .options button:hover {
+      background-color: #bae6fd;
+    }
+    .range-inputs {
+      display: flex;
+      justify-content: space-between;
+      gap: 10px;
       margin-top: 20px;
-      color: #ffffff;
     }
-    #footer {
-      font-size: 0.8rem;
-      color: #aaaaaa;
-      margin-top: 50px;
+    .range-inputs input {
+      width: 100%;
+      padding: 12px;
+      border: 2px solid #cbd5e1;
+      border-radius: 10px;
+      font-size: 16px;
     }
-    ol {
-      text-align: right;
-      margin-right: 20px;
+    .range-inputs button {
+      margin-top: 20px;
+      width: 100%;
+      background-color: #10b981;
+      color: white;
+      padding: 14px;
+      border: none;
+      border-radius: 12px;
+      font-size: 16px;
+      font-weight: bold;
+      cursor: pointer;
+    }
+    .nav-buttons {
+      display: flex;
+      justify-content: space-between;
+      margin-top: 40px;
+    }
+    .nav-buttons button {
+      padding: 12px 24px;
+      font-size: 16px;
+      border: none;
+      background-color: #1d4ed8;
+      color: white;
+      border-radius: 10px;
+      cursor: pointer;
+    }
+    .result {
+      margin-top: 40px;
+      background: #dcfce7;
+      border: 1px solid #86efac;
+      padding: 25px;
+      border-radius: 12px;
+      font-size: 20px;
+      text-align: center;
+      color: #166534;
+      font-weight: bold;
     }
   </style>
 </head>
 <body>
-  <h1>كُن صامد</h1>
-  <div class="box">
-    <h2>أدخل رقم هاتفك</h2>
-    <input type="text" id="phoneNumber" placeholder="رقم الهاتف">
-    <button id="searchBtn">ابحث عن التقدم</button>
-  </div>
-
-  <div id="tracker" class="box" style="display: none;">
-    <h2>أنت صامد منذ:</h2>
-    <div id="days">0</div>
-    <div id="message"></div>
-    <h3 id="userName">الاسم: </h3>
-    <h3 id="pointsDisplay">النقاط: </h3>
-    <button id="resetBtn">خسرت، أعد تعيين العداد</button>
-  </div>
-
-  <div class="box">
-    <h2>أفضل 3 صامدين</h2>
-    <ol id="topSurvivors"></ol>
-  </div>
-
-  <div class="box">
-    <h2>أكثر 3 حصدوا نقاط</h2>
-    <ol id="topPoints"></ol>
-  </div>
-
-  <div id="footer">
-    <p>صامد - برمجة وتصميم عبدالله علي محمد الدرويش - جميع الحقوق محفوظة.</p>
-    <div style="margin-top: 10px;">
-      <a href="https://wa.me/967734799935?text=أرغب%20في%20التسجيل%20في%20موقع%20صامد" target="_blank" style="font-size: 0.9rem; color: #10b981; text-decoration: none;">
-        هل ترغب في التسجيل معنا؟ تواصل معنا على واتساب
-      </a>
-    </div>
+  <div class="container">
+    <h1>حاسبة معدل الثانوية العامة الذكية</h1>
+    <div id="app"></div>
   </div>
 
   <script>
-    const usersData = {
-      "778999688": { name: "بدون اسم", startDate: "2024-11-07", basePoints: 0, shared: false },
-      "778321000": { name: "بدون اسم", startDate: "2025-04-12", basePoints: 0, shared: false },
-      "775759491": { name: "بدون اسم", startDate: "2025-04-12", basePoints: 0, shared: false },
-      "772222222": { name: "بدون اسم", startDate: "2026-01-01", basePoints: 0, shared: false },
-      "773333333": { name: "بدون اسم", startDate: "2026-01-01", basePoints: 0, shared: false },
-      "774444444": { name: "بدون اسم", startDate: "2026-01-01", basePoints: 0, shared: false },
-      "775555555": { name: "بدون اسم", startDate: "2026-01-01", basePoints: 0, shared: false },
-      "776666666": { name: "بدون اسم", startDate: "2026-01-01", basePoints: 0, shared: false },
-      "777777777": { name: "بدون اسم", startDate: "2026-01-01", basePoints: 0, shared: false },
-      "778109077": { name: "بدون اسم", startDate: "2025-04-12", basePoints: 0, shared: false },
-      "771111111": { name: "بدون اسم", startDate: "2026-11-07", basePoints: 0, shared: false },
-      "778888888": { name: "بدون اسم", startDate: "2026-01-01", basePoints: 0, shared: false },
-      "779999999": { name: "بدون اسم", startDate: "2026-01-01", basePoints: 0, shared: false }
-    };
+    const questions = [
+      {
+        id: 'mood',
+        text: 'كيف كان شعورك العام أثناء فترة الامتحانات؟',
+        options: ['مرتاح وواثق', 'متوتر بس مسيطر', 'ضايع شوي', 'مكتئب أو مرهق نفسيًا', 'ما كنت حاس بأي شي']
+      },
+      {
+        id: 'sleep',
+        text: 'كيف كان نومك خلال فترة الامتحانات؟',
+        options: ['منتظم جدًا', 'جيد نسبيًا', 'مضطرب شوي', 'ما كنت أنام', 'مش فاكر حتى']
+      },
+      {
+        id: 'studyHabits',
+        text: 'هل كنت تذاكر بانتظام طول السنة؟',
+        options: ['نعم بشكل يومي', 'أغلب الأيام', 'فقط أيام المراجعة', 'قبل الامتحان بس', 'ولا يوم فعليًا']
+      },
+      {
+        id: 'arabicGrade',
+        text: 'توقّعك لمادة اللغة العربية؟ (أقل وأعلى درجة)',
+        type: 'range'
+      },
+      {
+        id: 'mathGrade',
+        text: 'توقّعك لمادة الرياضيات (تفاضل + جبر وهندسة = مادة واحدة)',
+        type: 'range'
+      },
+      {
+        id: 'quranGrade',
+        text: 'توقّعك لمادة القرآن الكريم؟',
+        type: 'range'
+      },
+      {
+        id: 'islamicGrade',
+        text: 'توقّعك لمادة التربية الإسلامية؟',
+        type: 'range'
+      },
+      {
+        id: 'chemistryGrade',
+        text: 'توقّعك لمادة الكيمياء؟',
+        type: 'range'
+      },
+      {
+        id: 'physicsGrade',
+        text: 'توقّعك لمادة الفيزياء؟',
+        type: 'range'
+      }
+    ];
 
-    const phoneInput = document.getElementById("phoneNumber");
-    const searchBtn = document.getElementById("searchBtn");
-    const tracker = document.getElementById("tracker");
-    const daysDisplay = document.getElementById("days");
-    const messageDisplay = document.getElementById("message");
-    const userNameDisplay = document.getElementById("userName");
-    const pointsDisplay = document.getElementById("pointsDisplay");
-    const resetBtn = document.getElementById("resetBtn");
+    let current = 0;
+    const answers = {};
 
-    const storedPhone = localStorage.getItem("storedPhone");
-    if (storedPhone) {
-      phoneInput.value = storedPhone;
-      searchForUser(storedPhone);
+    function renderQuestion() {
+      const app = document.getElementById('app');
+      const q = questions[current];
+      let html = `<div class="question">
+        <h2>${q.text}</h2>`;
+
+      if (q.options) {
+        html += '<div class="options">';
+        q.options.forEach(opt => {
+          html += `<button onclick="answer('${q.id}', '${opt}')">${opt}</button>`;
+        });
+        html += '</div>';
+      } else if (q.type === 'range') {
+        html += `<div class="range-inputs">
+          <input type="number" placeholder="أقل درجة" id="${q.id}_min">
+          <input type="number" placeholder="أعلى درجة" id="${q.id}_max">
+          <button onclick="saveRange('${q.id}')">التالي</button>
+        </div>`;
+      }
+
+      html += '</div><div class="nav-buttons">';
+      if (current > 0) html += `<button onclick="prev()">السابق</button>`;
+      if (current < questions.length - 1) html += `<button onclick="next()">تخطي</button>`;
+      html += '</div>';
+      app.innerHTML = html;
     }
 
-    searchBtn.onclick = () => {
-      const phone = phoneInput.value.trim();
-      if (phone) {
-        localStorage.setItem("storedPhone", phone);
-        searchForUser(phone);
-      }
-    };
+    function answer(id, value) {
+      answers[id] = value;
+      next();
+    }
 
-    function calculatePoints(days) {
+    function saveRange(id) {
+      const min = parseFloat(document.getElementById(id + '_min').value);
+      const max = parseFloat(document.getElementById(id + '_max').value);
+      if (!isNaN(min) && !isNaN(max)) {
+        answers[id] = { min, max };
+        next();
+      } else {
+        alert('يرجى إدخال قيم صحيحة.');
+      }
+    }
+
+    function next() {
+      if (current < questions.length - 1) {
+        current++;
+        renderQuestion();
+      } else {
+        showResult();
+      }
+    }
+
+    function prev() {
+      if (current > 0) {
+        current--;
+        renderQuestion();
+      }
+    }
+
+    function showResult() {
+      const app = document.getElementById('app');
+      let html = '<h2>النتيجة التقريبية لمعدلك:</h2>';
       let total = 0;
-      for (let i = 1; i <= Math.floor(days / 10); i++) {
-        total += i;
+      let count = 0;
+      for (let key in answers) {
+        const val = answers[key];
+        if (typeof val === 'object') {
+          const avg = (parseFloat(val.min) + parseFloat(val.max)) / 2;
+          total += avg;
+          count++;
+        }
       }
-      return total;
+      const avg = total / count;
+      html += `<div class="result">${avg.toFixed(2)} / 100</div>`;
+      app.innerHTML = html;
     }
 
-    function searchForUser(phone) {
-      if (usersData[phone]) {
-        const user = usersData[phone];
-        const startDate = new Date(user.startDate);
-        const now = new Date();
-        const diff = Math.floor((now - startDate) / (1000 * 60 * 60 * 24)) + 1;
-        const dynamicPoints = calculatePoints(diff);
-        const totalPoints = user.basePoints + dynamicPoints + (user.shared ? 3 : 0);
-
-        daysDisplay.textContent = diff;
-        userNameDisplay.textContent = "الاسم: " + user.name;
-        pointsDisplay.textContent = "النقاط: " + totalPoints;
-        tracker.style.display = 'block';
-
-        showMotivation(diff);
-        updateStats();
-        alert(`أهلاً بك، لقد جمعت ${totalPoints} نقطة حتى الآن، استمر يا بطل!`);
-      } else {
-        alert("لم يتم العثور على هذا الرقم.. قل للدرويش يسجلك");
-      }
-    }
-
-    function showMotivation(days) {
-      if (days < 10) {
-        messageDisplay.textContent = "أنت في البداية، لا تستسلم! الطريق طويل لكنك قادر على النجاح.";
-      } else if (days < 30) {
-        messageDisplay.textContent = "لقد مررت بعشرة أيام! رائع، أنت على الطريق الصحيح.";
-      } else if (days < 50) {
-        messageDisplay.textContent = "أنت بطل! 30 يومًا بدون تراجع! استمر في التقدم.";
-      } else if (days < 100) {
-        messageDisplay.textContent = "50 يومًا من الصمود! أنت تظهر قوة غير عادية، فخورون بك.";
-      } else if (days < 200) {
-        messageDisplay.textContent = "100 يوم! لم يعد هناك شيء يقف في طريقك، استمر في مسيرتك!";
-      } else if (days < 365) {
-        messageDisplay.textContent = "أنت شخص استثنائي! 200 يوم من العزيمة والإرادة.";
-      } else {
-        messageDisplay.textContent = "عام كامل! تخطيت المستحيل! أنت الآن أسطورة الصمود!";
-      }
-    }
-
-    function updateStats() {
-      const userList = Object.entries(usersData).map(([phone, data]) => {
-        const days = Math.floor((new Date() - new Date(data.startDate)) / (1000 * 60 * 60 * 24)) + 1;
-        const dynamicPoints = calculatePoints(days);
-        const points = data.basePoints + dynamicPoints + (data.shared ? 3 : 0);
-        return { name: data.name, days, points };
-      });
-
-      const topSurvivors = [...userList].sort((a, b) => b.days - a.days).slice(0, 3);
-      const topPoints = [...userList].sort((a, b) => b.points - a.points).slice(0, 3);
-
-      document.getElementById("topSurvivors").innerHTML = topSurvivors.map(u => `<li>${u.name} - ${u.days} يوم</li>`).join('');
-      document.getElementById("topPoints").innerHTML = topPoints.map(u => `<li>${u.name} - ${u.points} نقاط</li>`).join('');
-    }
-
-    resetBtn.onclick = () => {
-      const phone = phoneInput.value.trim();
-      if (phone && usersData[phone]) {
-        const name = usersData[phone].name;
-        const message = `السلام عليكم يا درويش، أنا ${name}، رقمي هو ${phone}، وقد خسرت للأسف وأحتاج لإعادة تعيين العداد.`;
-        const encodedMessage = encodeURIComponent(message);
-        window.open(`https://wa.me/967734799935?text=${encodedMessage}`, "_blank");
-      } else {
-        alert("أدخل رقمك أولًا للمتابعة.");
-      }
-    };
-
-    updateStats();
+    renderQuestion();
   </script>
 </body>
 </html>
