@@ -90,14 +90,14 @@
   </style>
 </head>
 <body>
-  <h1>كُن صامد</h1>
+  <h1>صامد - تحدي الأبطال</h1>
   <div class="box">
     <h2>أدخل رقم هاتفك</h2>
     <input type="text" id="phoneNumber" placeholder="رقم الهاتف">
     <button id="searchBtn">ابحث عن التقدم</button>
   </div>
 
-  <div id="tracker" class="box">
+  <div id="tracker" class="box" style="display: none;">
     <h2>أنت صامد منذ:</h2>
     <div id="days">0</div>
     <div id="message"></div>
@@ -105,9 +105,11 @@
   </div>
 
   <div id="footer">
-    <p>صامد - برمجة وتصميم عبدالله علي محمد الدرويش - جميع الحقوق محفوظة.</p>
+    <p>صامد - برمجة وتصميم عبدالله علي محمد الدرويش. جميع الحقوق محفوظة.</p>
   </div>
 
+  <!-- زر الخسارة (غير ظاهر) -->
+  <button id="lostBtn" onclick="window.location.href='https://wa.me/967734799935?text=لقد%20خسرت%20وأحتاج%20إعادة%20بياناتي'">لقد خسرت</button>
 
   <script>
     // إضافة بيانات المستخدمين وبدء العداد
