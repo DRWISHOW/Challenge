@@ -48,8 +48,6 @@
     }
     #startBtn { background-color: #3b82f6; color: white; }
     #startBtn:hover { background-color: #2563eb; }
-    #registerBtn { background-color: #10b981; color: white; }
-    #registerBtn:hover { background-color: #047857; }
     #resetBtn {
       background-color: transparent;
       color: #f87171;
@@ -73,16 +71,15 @@
       color: #aaaaaa;
       margin-top: 50px;
     }
-    #registerNewBtn {
-      background-color: #10b981;
-      color: white;
-      padding: 8px 15px;
-      font-size: 0.9rem;
-      border-radius: 12px;
+    #registerLink {
+      background-color: transparent;
+      color: #10b981;
+      font-size: 1rem;
+      text-decoration: underline;
+      border: none;
+      margin-top: 20px;
+      cursor: pointer;
       display: none;
-    }
-    #registerNewBtn:hover {
-      background-color: #047857;
     }
   </style>
 </head>
@@ -92,14 +89,13 @@
     <h2>ابدأ رحلتك</h2>
     <input type="text" id="phoneNumber" placeholder="رقم الهاتف">
     <button id="startBtn">انطلاق</button>
-    <button id="registerBtn" style="display:none;">تسجيل رقم جديد</button>
-    <button id="registerNewBtn" style="display:none;">إضافة نفسي في الموقع</button>
+    <button id="resetBtn">خسرت؟ اضغط هنا لإعادة التحدي</button>
+    <button id="registerLink">إضافة نفسي في الموقع</button>
   </div>
 
-  <div id="tracker" class="box">
+  <div id="tracker" class="box" style="display: none;">
     <h2>يا <span id="userLabel"></span>، أنت صامد منذ:</h2>
     <div id="days">0</div>
-    <button id="resetBtn">خسرت؟ اضغط هنا لإعادة التحدي</button>
     <div id="message"></div>
   </div>
 
@@ -108,27 +104,12 @@
   </div>
 
   <script>
-    const userDatabase = {
-      "778999688": { name: "عبدالله الدرويش", startDate: "07/11/2024" },
-      "778321000": { name: "طه الجعدبي", startDate: "11/04/2025" },
-      "775759491": { name: "عبدالوهاب المخلافي", startDate: "11/04/2025" },
-      "772222222": { name: "بدون اسم", startDate: "01/01/2025" },
-      "773333333": { name: "بدون اسم", startDate: "01/01/2025" },
-      "774444444": { name: "بدون اسم", startDate: "01/01/2025" },
-      "775555555": { name: "بدون اسم", startDate: "01/01/2025" },
-      "776666666": { name: "بدون اسم", startDate: "01/01/2025" },
-      "777777777": { name: "بدون اسم", startDate: "01/01/2025" },
-      "778888888": { name: "بدون اسم", startDate: "01/01/2025" },
-      "779999999": { name: "بدون اسم", startDate: "01/01/2025" },
-      "778109077": { name: "محمد اسكندر", startDate: "11/04/2025" },
-      "734799935": { name: "عبدالله الدرويش", startDate: "07/11/2024" }
-    };
+    const userDatabase = {};
 
     const phoneNumberInput = document.getElementById("phoneNumber");
     const startBtn = document.getElementById("startBtn");
-    const registerBtn = document.getElementById("registerBtn");
     const resetBtn = document.getElementById("resetBtn");
-    const registerNewBtn = document.getElementById("registerNewBtn");
+    const registerLink = document.getElementById("registerLink");
     const tracker = document.getElementById("tracker");
     const userLabel = document.getElementById("userLabel");
     const daysDisplay = document.getElementById("days");
@@ -140,18 +121,11 @@
         showUser(phoneNumber);
       } else {
         alert("هذا الرقم غير موجود في قاعدة البيانات.. قل لـ عبدالله الدرويش يسجلك");
-        registerBtn.style.display = 'block'; // يظهر زر التسجيل
-        registerNewBtn.style.display = 'block'; // يظهر زر إضافة نفسي
+        registerLink.style.display = 'inline-block'; // يظهر رابط التسجيل
       }
-    }
-
-    registerNewBtn.onclick = () => {
-      const phoneNumber = phoneNumberInput.value.trim();
-      const whatsappLink = `https://wa.me/967734799935?text=أريد%20تسجيل%20رقمي%20${phoneNumber}%20في%20الموقع.`;
-      window.open(whatsappLink, '_blank');
     };
 
-    registerBtn.onclick = () => {
+    registerLink.onclick = () => {
       const phoneNumber = phoneNumberInput.value.trim();
       const whatsappLink = `https://wa.me/967734799935?text=أريد%20تسجيل%20رقمي%20${phoneNumber}%20في%20الموقع.`;
       window.open(whatsappLink, '_blank');
@@ -164,12 +138,12 @@
         showUser(phoneNumber);
         messageDisplay.textContent = "لا مشكلة! كلنا نواجه تحديات. استمر، يمكنك فعلها!";
       }
-    }
+    };
 
     function showUser(phoneNumber) {
       const startDate = new Date(userDatabase[phoneNumber].startDate);
       const now = new Date();
-      const diff = Math.floor((now - startDate) / (1000 * 60 * 60 * 24));
+      const diff = Math.floor((now - startDate) / (1000 * 60 * 60 * 24)); // حساب الأيام بناءً على تاريخ التسجيل
       userLabel.textContent = userDatabase[phoneNumber].name;
       daysDisplay.textContent = diff > 0 ? diff : 1; // بدء العد من 1 يوم
       tracker.style.display = 'block';
