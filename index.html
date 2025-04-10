@@ -46,153 +46,120 @@
       margin-top: 10px;
       transition: background-color 0.3s;
     }
-    #startBtn { background-color: #3b82f6; color: white; }
-    #startBtn:hover { background-color: #2563eb; }
-    #resetBtn {
-      background-color: transparent;
-      color: #f87171;
-      font-size: 0.9rem;
-      text-decoration: underline;
-      border: none;
-      margin-top: 10px;
-      display: block;
-    }
-    #tracker, #friendTracker {
+    #searchBtn { background-color: #10b981; color: white; }
+    #searchBtn:hover { background-color: #059669; }
+    #tracker {
       margin-top: 20px;
     }
-    #days, #friendDays {
+    #days {
       font-size: 3rem;
       font-weight: bold;
       color: #facc15;
       margin-top: 10px;
+    }
+    #message {
+      font-size: 1.2rem;
+      margin-top: 20px;
+      color: #ffffff;
     }
     #footer {
       font-size: 0.8rem;
       color: #aaaaaa;
       margin-top: 50px;
     }
-    #registerLink {
-      background-color: transparent;
-      color: #10b981;
-      font-size: 1rem;
-      text-decoration: underline;
-      border: none;
-      margin-top: 20px;
-      cursor: pointer;
-      display: none;
-    }
   </style>
 </head>
 <body>
-  <h1>كُن صامد</h1>
+  <h1>صامد - تحدي الأبطال</h1>
   <div class="box">
-    <h2>ابدأ رحلتك</h2>
+    <h2>أدخل رقم هاتفك</h2>
     <input type="text" id="phoneNumber" placeholder="رقم الهاتف">
-    <button id="startBtn">انطلاق</button>
-    <button id="resetBtn">خسرت؟ اضغط هنا لإعادة التحدي</button>
-    <button id="registerLink">إضافة نفسي في الموقع</button>
+    <button id="searchBtn">ابحث عن التقدم</button>
   </div>
 
   <div id="tracker" class="box" style="display: none;">
-    <h2>يا <span id="userLabel"></span>، أنت صامد منذ:</h2>
+    <h2>أنت صامد منذ:</h2>
     <div id="days">0</div>
     <div id="message"></div>
+    <h3 id="userName">الاسم: </h3>
   </div>
 
   <div id="footer">
-    <p>صامد - برمجة وتصميم عبدالله علي محمد الدرويش - جميع الحقوق محفوظة.</p>
+    <p>صامد - برمجة وتصميم عبدالله علي محمد الدرويش. جميع الحقوق محفوظة.</p>
   </div>
 
   <script>
-    const userDatabase = {
-      // بيانات اختبارية للمستخدمين (ينبغي استبدالها بقاعدة بيانات فعلية)
-      "1234567890": { name: "عبدالله الدرويش", startDate: "2024-11-07" },
-      "0987654321": { name: "محمد الجعدبي", startDate: "2024-10-15" }
+    // قاعدة بيانات الأرقام والأسماء
+    const usersData = {
+      "778999688": { name: "عبدالله الدرويش", startDate: "2024-11-07" },
+      "770000000": { name: "طه الجعدبي", startDate: "2025-01-01" },
+      "771111111": { name: "عبدالوهاب المخلافي", startDate: "2025-01-01" },
+      "772222222": { name: "بدون اسم", startDate: "2025-01-01" },
+      "773333333": { name: "بدون اسم", startDate: "2025-01-01" },
+      "774444444": { name: "بدون اسم", startDate: "2025-01-01" },
+      "775555555": { name: "بدون اسم", startDate: "2025-01-01" },
+      "776666666": { name: "بدون اسم", startDate: "2025-01-01" },
+      "777777777": { name: "بدون اسم", startDate: "2025-01-01" },
+      "778888888": { name: "محمد اسكندر", startDate: "2025-01-01" },
+      "779999999": { name: "عبدالله الدرويش", startDate: "2025-01-01" },
+      "778109077": { name: "بدون اسم", startDate: "2025-01-01" },
+      "734799935": { name: "بدون اسم", startDate: "2024-11-07" }
     };
 
-    const phoneNumberInput = document.getElementById("phoneNumber");
-    const startBtn = document.getElementById("startBtn");
-    const resetBtn = document.getElementById("resetBtn");
-    const registerLink = document.getElementById("registerLink");
+    const phoneInput = document.getElementById("phoneNumber");
+    const searchBtn = document.getElementById("searchBtn");
     const tracker = document.getElementById("tracker");
-    const userLabel = document.getElementById("userLabel");
     const daysDisplay = document.getElementById("days");
     const messageDisplay = document.getElementById("message");
+    const userNameDisplay = document.getElementById("userName");
 
-    startBtn.onclick = () => {
-      const phoneNumber = phoneNumberInput.value.trim();
-      if (userDatabase[phoneNumber]) {
-        showUser(phoneNumber);
+    // قراءة البيانات المخزنة في localStorage عند تحميل الصفحة
+    const storedPhone = localStorage.getItem("storedPhone");
+    if (storedPhone) {
+      phoneInput.value = storedPhone;
+      searchForUser(storedPhone); // إذا كان هناك رقم هاتف مخزن سابقًا، يتم العثور على المستخدم مباشرة
+    }
+
+    searchBtn.onclick = () => {
+      const phone = phoneInput.value.trim();
+      if (phone) {
+        localStorage.setItem("storedPhone", phone); // حفظ رقم الهاتف في localStorage
+        searchForUser(phone);
+      }
+    };
+
+    function searchForUser(phone) {
+      if (usersData[phone]) {
+        const startDate = new Date(usersData[phone].startDate);
+        const now = new Date();
+        const diff = Math.floor((now - startDate) / (1000 * 60 * 60 * 24)) + 1; // العداد يبدأ من 1
+        daysDisplay.textContent = diff;
+        userNameDisplay.textContent = "الاسم: " + usersData[phone].name;
+        tracker.style.display = 'block';
+        showMotivation(diff);
       } else {
-        alert("هذا الرقم غير موجود في قاعدة البيانات.. قل لـ عبدالله الدرويش يسجلك");
-        registerLink.style.display = 'inline-block'; // يظهر رابط التسجيل
+        alert("لم يتم العثور على هذا الرقم.");
       }
-    };
-
-    registerLink.onclick = () => {
-      const phoneNumber = phoneNumberInput.value.trim();
-      const whatsappLink = `https://wa.me/967734799935?text=أريد%20تسجيل%20رقمي%20${phoneNumber}%20في%20الموقع.`;
-      window.open(whatsappLink, '_blank');
-    };
-
-    resetBtn.onclick = () => {
-      const phoneNumber = phoneNumberInput.value.trim();
-      if (userDatabase[phoneNumber]) {
-        userDatabase[phoneNumber].startDate = new Date().toISOString().split('T')[0]; // إعادة التحدي من اليوم
-        showUser(phoneNumber);
-        messageDisplay.textContent = "لا مشكلة! كلنا نواجه تحديات. استمر، يمكنك فعلها!";
-      }
-    };
-
-    function showUser(phoneNumber) {
-      const startDate = new Date(userDatabase[phoneNumber].startDate);
-      const now = new Date();
-      const diff = Math.floor((now - startDate) / (1000 * 60 * 60 * 24)); // حساب الأيام بناءً على تاريخ التسجيل
-      userLabel.textContent = userDatabase[phoneNumber].name;
-      daysDisplay.textContent = diff > 0 ? diff : 1; // بدء العد من 1 يوم
-      tracker.style.display = 'block';
-      showMessage(diff);
-      localStorage.setItem(phoneNumber, JSON.stringify({ name: userDatabase[phoneNumber].name, startDate: userDatabase[phoneNumber].startDate }));
     }
 
-    function showMessage(days) {
-      if (days >= 10 && days < 30) {
-        messageDisplay.textContent = "مبروك! أنت تخطيت بداية التحدي! هذا فقط بداية رحلة عظيمة، استمر!";
+    // إظهار الرسائل التحفيزية بناءً على عدد الأيام
+    function showMotivation(days) {
+      if (days < 10) {
+        messageDisplay.textContent = "أنت في البداية، لا تستسلم! الطريق طويل لكنك قادر على النجاح.";
+      } else if (days >= 10 && days < 30) {
+        messageDisplay.textContent = "لقد مررت بعشرة أيام! رائع، أنت على الطريق الصحيح.";
       } else if (days >= 30 && days < 50) {
-        messageDisplay.textContent = "يا بطل! 30 يومًا بدون تراجع! أنت في طريقك لتحقيق أشياء عظيمة!";
+        messageDisplay.textContent = "أنت بطل! 30 يومًا بدون تراجع! استمر في التقدم.";
       } else if (days >= 50 && days < 100) {
-        messageDisplay.textContent = "واو! أنت الآن فوق القمة! 50 يومًا من القوة والصمود! فخورين بك!";
+        messageDisplay.textContent = "50 يومًا من الصمود! أنت تظهر قوة غير عادية، فخورون بك.";
       } else if (days >= 100 && days < 200) {
-        messageDisplay.textContent = "100 يوم! أنت فعلاً أسطورة! لا يوقفك شيء الآن! واصل التفوق!";
+        messageDisplay.textContent = "100 يوم! لم يعد هناك شيء يقف في طريقك، استمر في مسيرتك!";
       } else if (days >= 200 && days < 365) {
-        messageDisplay.textContent = "لقد دخلت مرحلة الاستثنائية! 200 يوم من الإرادة التي لا تهزم! أنت ملهم!";
+        messageDisplay.textContent = "أنت شخص استثنائي! 200 يوم من العزيمة والإرادة.";
       } else if (days >= 365) {
-        messageDisplay.textContent = "عام كامل! تخطيت المستحيل! أنت الآن واحد من الأكثر قوة وصمود على وجه الأرض! العالم كله أمامك!";
+        messageDisplay.textContent = "عام كامل! تخطيت المستحيل! أنت الآن أسطورة الصمود!";
       }
     }
-
-    window.onload = () => {
-      const savedPhoneNumber = Object.keys(userDatabase).find(phone => localStorage.getItem(phone));
-      if (savedPhoneNumber) {
-        showUser(savedPhoneNumber);
-      }
-    };
-
-    // وظيفة لتحديث الأيام تلقائيًا كل منتصف الليل
-    function updateDays() {
-      const now = new Date();
-      if (now.getHours() === 0 && now.getMinutes() === 0) {
-        Object.keys(userDatabase).forEach(phone => {
-          const startDate = new Date(userDatabase[phone].startDate);
-          const diff = Math.floor((now - startDate) / (1000 * 60 * 60 * 24));
-          if (diff > 0) {
-            userDatabase[phone].startDate = new Date(startDate.setDate(startDate.getDate() + 1)).toISOString().split('T')[0]; // زيادة يوم
-            showUser(phone);
-          }
-        });
-      }
-    }
-    setInterval(updateDays, 60000); // تحديث كل دقيقة للتأكد من التوقيت
   </script>
 </body>
 </html>
