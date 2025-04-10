@@ -46,8 +46,8 @@
       margin-top: 10px;
       transition: background-color 0.3s;
     }
-    #searchBtn { background-color: #10b981; color: white; }
-    #searchBtn:hover { background-color: #059669; }
+    #startBtn { background-color: #3b82f6; color: white; }
+    #startBtn:hover { background-color: #2563eb; }
     #resetBtn {
       background-color: transparent;
       color: #f87171;
@@ -57,135 +57,107 @@
       margin-top: 10px;
       display: block;
     }
-    #tracker {
+    #tracker, #friendTracker {
       margin-top: 20px;
     }
-    #days {
+    #days, #friendDays {
       font-size: 3rem;
       font-weight: bold;
       color: #facc15;
       margin-top: 10px;
-    }
-    #message {
-      font-size: 1.2rem;
-      margin-top: 20px;
-      color: #ffffff;
     }
     #footer {
       font-size: 0.8rem;
       color: #aaaaaa;
       margin-top: 50px;
     }
-    #lostBtn {
-      display: none;
-      position: absolute;
-      bottom: 10px;
-      left: 10px;
-      background-color: transparent;
-      color: #ff0000;
-      font-size: 1rem;
-      border: none;
-      cursor: pointer;
-    }
   </style>
 </head>
 <body>
-  <h1>كُن صامد</h1>
+  <h1>صامد - تحدي الأبطال</h1>
   <div class="box">
-    <h2>أدخل رقم هاتفك</h2>
+    <h2>ابدأ رحلتك</h2>
     <input type="text" id="phoneNumber" placeholder="رقم الهاتف">
-    <button id="searchBtn">ابحث عن التقدم</button>
+    <button id="startBtn">انطلاق</button>
   </div>
 
-  <div id="tracker" class="box" style="display: none;">
-    <h2>أنت صامد منذ:</h2>
+  <div id="tracker" class="box">
+    <h2>يا <span id="userLabel"></span>، أنت صامد منذ:</h2>
     <div id="days">0</div>
-    <div id="message"></div>
     <button id="resetBtn">خسرت؟ اضغط هنا لإعادة التحدي</button>
+    <div id="message"></div>
   </div>
 
   <div id="footer">
-    <p>صامد - برمجة وتصميم عبدالله علي محمد الدرويش - جميع الحقوق محفوظة.</p>
+    <p>صامد - برمجة وتصميم عبدالله علي محمد الدرويش. جميع الحقوق محفوظة.</p>
   </div>
 
-  <!-- زر الخسارة (غير ظاهر) -->
-  <button id="lostBtn" onclick="window.location.href='https://wa.me/967734799935?text=لقد%20خسرت%20وأحتاج%20إعادة%20بياناتي'">
   <script>
-    // إضافة بيانات المستخدمين وبدء العداد
-    const usersData = {
-      "778999688": "2024-11-07",
-      "778321000": "2025-04-11",
-      "775759491": "2025-04-11",
-      "772222222": "2025-03-01",
-      "773333333": "2025-04-01",
-      "774444444": "2025-05-01",
-      "775555555": "2025-06-01",
-      "776666666": "2025-07-01",
-      "777777777": "2025-08-01",
-      "778888888": "2025-09-01",
-      "779999999": "2025-10-01",
-      "778109077": "2025-04-11",
-      "734799935": "2024-11-07"
+    const userDatabase = {
+      "778999688": { name: "عبدالله الدرويش", startDate: "7/11/2024" },
+      "770000000": { name: "طه الجعدبي", startDate: "1/1/2025" },
+      "771111111": { name: "عبدالوهاب المخلافي", startDate: "1/1/2025" },
+      "772222222": { name: "بدون اسم", startDate: "1/1/2025" },
+      "773333333": { name: "بدون اسم", startDate: "1/1/2025" },
+      "774444444": { name: "بدون اسم", startDate: "1/1/2025" },
+      "775555555": { name: "بدون اسم", startDate: "1/1/2025" },
+      "776666666": { name: "بدون اسم", startDate: "1/1/2025" },
+      "777777777": { name: "بدون اسم", startDate: "1/1/2025" },
+      "778888888": { name: "بدون اسم", startDate: "1/1/2025" },
+      "779999999": { name: "بدون اسم", startDate: "1/1/2025" },
+      "778109077": { name: "محمد اسكندر", startDate: "1/1/2025" },
+      "734799935": { name: "عبدالله الدرويش", startDate: "7/11/2024" }
     };
 
-    const phoneInput = document.getElementById("phoneNumber");
-    const searchBtn = document.getElementById("searchBtn");
+    const phoneNumberInput = document.getElementById("phoneNumber");
+    const startBtn = document.getElementById("startBtn");
     const resetBtn = document.getElementById("resetBtn");
     const tracker = document.getElementById("tracker");
+    const userLabel = document.getElementById("userLabel");
     const daysDisplay = document.getElementById("days");
     const messageDisplay = document.getElementById("message");
-    const lostBtn = document.getElementById("lostBtn");
 
-    // قراءة البيانات المخزنة في localStorage عند تحميل الصفحة
-    const storedPhone = localStorage.getItem("storedPhone");
-    if (storedPhone) {
-      phoneInput.value = storedPhone;
-      searchForUser(storedPhone); // إذا كان هناك رقم هاتف مخزن سابقًا، يتم العثور على المستخدم مباشرة
-    }
-
-    searchBtn.onclick = () => {
-      const phone = phoneInput.value.trim();
-      if (phone) {
-        localStorage.setItem("storedPhone", phone); // حفظ رقم الهاتف في localStorage
-        searchForUser(phone);
-      }
-    };
-
-    function searchForUser(phone) {
-      if (usersData[phone]) {
-        const startDate = new Date(usersData[phone]);
-        const now = new Date();
-        const diff = Math.floor((now - startDate) / (1000 * 60 * 60 * 24)) + 1; // العداد يبدأ من 1
-        daysDisplay.textContent = diff;
-        tracker.style.display = 'block';
-        lostBtn.style.display = 'block'; // إظهار زر الخسارة
-        showMotivation(diff);
-
-        resetBtn.onclick = () => {
-          // إرسال رسالة على واتساب عند الضغط على زر "خسرت"
-          window.location.href = `https://wa.me/967734799935?text=لقد%20خسرت%20وأحتاج%20إعادة%20بياناتي%20لرقم%20${phone}`;
-        };
+    startBtn.onclick = () => {
+      const phoneNumber = phoneNumberInput.value.trim();
+      if (userDatabase[phoneNumber]) {
+        showUser(phoneNumber);
       } else {
-        alert("لم يتم العثور على هذا الرقم.. قل للدرويش يسجلك");
+        alert("هذا الرقم غير موجود في قاعدة البيانات.");
       }
     }
 
-    // إظهار الرسائل التحفيزية بناءً على عدد الأيام
-    function showMotivation(days) {
-      if (days < 10) {
-        messageDisplay.textContent = "أنت في البداية، لا تستسلم! الطريق طويل لكنك قادر على النجاح.";
-      } else if (days >= 10 && days < 30) {
-        messageDisplay.textContent = "لقد مررت بعشرة أيام! رائع، أنت على الطريق الصحيح.";
+    resetBtn.onclick = () => {
+      const phoneNumber = phoneNumberInput.value.trim();
+      if (userDatabase[phoneNumber]) {
+        userDatabase[phoneNumber].startDate = new Date().toISOString().split('T')[0]; // إعادة التحدي من اليوم
+        showUser(phoneNumber);
+        messageDisplay.textContent = "لا مشكلة! كلنا نواجه تحديات. استمر، يمكنك فعلها!";
+      }
+    }
+
+    function showUser(phoneNumber) {
+      const startDate = new Date(userDatabase[phoneNumber].startDate);
+      const now = new Date();
+      const diff = Math.floor((now - startDate) / (1000 * 60 * 60 * 24));
+      userLabel.textContent = userDatabase[phoneNumber].name;
+      daysDisplay.textContent = diff > 0 ? diff : 1; // بدء العد من 1 يوم
+      tracker.style.display = 'block';
+      showMessage(diff);
+    }
+
+    function showMessage(days) {
+      if (days >= 10 && days < 30) {
+        messageDisplay.textContent = "مبروك! أنت تخطيت بداية التحدي! هذا فقط بداية رحلة عظيمة، استمر!";
       } else if (days >= 30 && days < 50) {
-        messageDisplay.textContent = "أنت بطل! 30 يومًا بدون تراجع! استمر في التقدم.";
+        messageDisplay.textContent = "يا بطل! 30 يومًا بدون تراجع! أنت في طريقك لتحقيق أشياء عظيمة!";
       } else if (days >= 50 && days < 100) {
-        messageDisplay.textContent = "50 يومًا من الصمود! أنت تظهر قوة غير عادية، فخورون بك.";
+        messageDisplay.textContent = "واو! أنت الآن فوق القمة! 50 يومًا من القوة والصمود! فخورين بك!";
       } else if (days >= 100 && days < 200) {
-        messageDisplay.textContent = "100 يوم! لم يعد هناك شيء يقف في طريقك، استمر في مسيرتك!";
+        messageDisplay.textContent = "100 يوم! أنت فعلاً أسطورة! لا يوقفك شيء الآن! واصل التفوق!";
       } else if (days >= 200 && days < 365) {
-        messageDisplay.textContent = "أنت شخص استثنائي! 200 يوم من العزيمة والإرادة.";
+        messageDisplay.textContent = "لقد دخلت مرحلة الاستثنائية! 200 يوم من الإرادة التي لا تهزم! أنت ملهم!";
       } else if (days >= 365) {
-        messageDisplay.textContent = "عام كامل! تخطيت المستحيل! أنت الآن أسطورة الصمود!";
+        messageDisplay.textContent = "عام كامل! تخطيت المستحيل! أنت الآن واحد من الأكثر قوة وصمود على وجه الأرض! العالم كله أمامك!";
       }
     }
 
