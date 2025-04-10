@@ -89,6 +89,7 @@
     <div id="message"></div>
     <h3 id="userName">الاسم: </h3>
     <h3 id="pointsDisplay">النقاط: </h3>
+    <button id="shareBtn">شارك الرابط (+3 نقاط)</button><br>
     <button id="resetBtn">خسرت، أعد تعيين العداد</button>
   </div>
 
@@ -113,19 +114,10 @@
 
   <script>
     const usersData = {
-      "778999688": { name: "عبدالله الدرويش", startDate: "2024-11-07" },
-      "778321000": { name: "طه الجعدبي", startDate: "2025-04-11" },
-      "775759491": { name: "عبدالوهاب المخلافي", startDate: "2025-04-11" },
-      "772222222": { name: "بدون اسم", startDate: "2026-01-01" },
-      "773333333": { name: "بدون اسم", startDate: "2026-01-01" },
-      "774444444": { name: "بدون اسم", startDate: "2026-01-01" },
-      "775555555": { name: "بدون اسم", startDate: "2026-01-01" },
-      "776666666": { name: "بدون اسم", startDate: "2026-01-01" },
-      "777777777": { name: "بدون اسم", startDate: "2026-01-01" },
-      "778109077": { name: "محمد اسكندر", startDate: "2025-04-11" },
-      "734799935": { name: "بدون اسم", startDate: "2026-11-07" },
-      "778888888": { name: "بدون اسم", startDate: "2026-01-01" },
-      "779999999": { name: "بدون اسم", startDate: "2026-01-01" }
+      "778999688": { name: "عبدالله الدرويش", startDate: "2024-11-07", points: 0 },
+      "778321000": { name: "طه الجعدبي", startDate: "2025-04-11", points: 0 },
+      "775759491": { name: "عبدالوهاب المخلافي", startDate: "2025-04-11", points: 0 },
+      "778109077": { name: "محمد اسكندر", startDate: "2025-04-11", points: 0 },
     };
 
     const phoneInput = document.getElementById("phoneNumber");
@@ -136,6 +128,9 @@
     const userNameDisplay = document.getElementById("userName");
     const pointsDisplay = document.getElementById("pointsDisplay");
     const resetBtn = document.getElementById("resetBtn");
+    const shareBtn = document.getElementById("shareBtn");
+
+    let sharedPhones = JSON.parse(localStorage.getItem("sharedPhones") || '{}');
 
     const storedPhone = localStorage.getItem("storedPhone");
     if (storedPhone) {
@@ -152,26 +147,33 @@
     };
 
     function calculatePoints(days) {
-      return Math.floor(days / 10);
+      let total = 0;
+      for (let i = 10, step = 1; i <= days; i += 10, step++) {
+        total += step;
+      }
+      return total;
     }
 
     function searchForUser(phone) {
       if (usersData[phone]) {
-        const startDate = new Date(usersData[phone].startDate);
+        const user = usersData[phone];
+        const startDate = new Date(user.startDate);
         const now = new Date();
         const diff = Math.floor((now - startDate) / (1000 * 60 * 60 * 24)) + 1;
-        const points = calculatePoints(diff);
+        const newPoints = calculatePoints(diff);
+
+        user.points = user.points || 0;
+        const totalPoints = user.points + newPoints;
 
         daysDisplay.textContent = diff;
-        userNameDisplay.textContent = "الاسم: " + usersData[phone].name;
-        pointsDisplay.textContent = "النقاط: " + points;
-        usersData[phone].points = points;
+        userNameDisplay.textContent = "الاسم: " + user.name;
+        pointsDisplay.textContent = "النقاط: " + totalPoints;
 
         tracker.style.display = 'block';
         showMotivation(diff);
         updateStats();
 
-        alert(`أهلاً بك، لقد جمعت ${points} نقطة حتى الآن، استمر يا بطل!`);
+        alert(`أهلاً بك، لقد جمعت ${totalPoints} نقطة حتى الآن، استمر يا بطل!`);
       } else {
         alert("لم يتم العثور على هذا الرقم.. قل للدرويش يسجلك");
       }
@@ -196,10 +198,11 @@
     }
 
     function updateStats() {
+      const now = new Date();
       const userList = Object.entries(usersData).map(([phone, data]) => {
-        const days = Math.floor((new Date() - new Date(data.startDate)) / (1000 * 60 * 60 * 24)) + 1;
-        const points = calculatePoints(days);
-        return { name: data.name, days, points };
+        const days = Math.floor((now - new Date(data.startDate)) / (1000 * 60 * 60 * 24)) + 1;
+        const earnedPoints = calculatePoints(days);
+        return { name: data.name, days, points: (data.points || 0) + earnedPoints };
       });
 
       const topSurvivors = [...userList].sort((a, b) => b.days - a.days).slice(0, 3);
@@ -218,6 +221,23 @@
         window.open(`https://wa.me/967734799935?text=${encodedMessage}`, "_blank");
       } else {
         alert("أدخل رقمك أولًا للمتابعة.");
+      }
+    };
+
+    shareBtn.onclick = () => {
+      const phone = phoneInput.value.trim();
+      if (phone && usersData[phone]) {
+        if (!sharedPhones[phone]) {
+          sharedPhones[phone] = true;
+          localStorage.setItem("sharedPhones", JSON.stringify(sharedPhones));
+          usersData[phone].points = (usersData[phone].points || 0) + 3;
+          alert("شكراً لمشاركتك! حصلت على 3 نقاط إضافية.");
+          searchForUser(phone);
+        } else {
+          alert("لقد حصلت على نقاط المشاركة مسبقاً.");
+        }
+      } else {
+        alert("أدخل رقمك أولاً.");
       }
     };
 
