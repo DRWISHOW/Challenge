@@ -73,6 +73,17 @@
       color: #aaaaaa;
       margin-top: 50px;
     }
+    #registerNewBtn {
+      background-color: #10b981;
+      color: white;
+      padding: 8px 15px;
+      font-size: 0.9rem;
+      border-radius: 12px;
+      display: none;
+    }
+    #registerNewBtn:hover {
+      background-color: #047857;
+    }
   </style>
 </head>
 <body>
@@ -82,6 +93,7 @@
     <input type="text" id="phoneNumber" placeholder="رقم الهاتف">
     <button id="startBtn">انطلاق</button>
     <button id="registerBtn" style="display:none;">تسجيل رقم جديد</button>
+    <button id="registerNewBtn" style="display:none;">إضافة نفسي في الموقع</button>
   </div>
 
   <div id="tracker" class="box">
@@ -116,6 +128,7 @@
     const startBtn = document.getElementById("startBtn");
     const registerBtn = document.getElementById("registerBtn");
     const resetBtn = document.getElementById("resetBtn");
+    const registerNewBtn = document.getElementById("registerNewBtn");
     const tracker = document.getElementById("tracker");
     const userLabel = document.getElementById("userLabel");
     const daysDisplay = document.getElementById("days");
@@ -128,8 +141,15 @@
       } else {
         alert("هذا الرقم غير موجود في قاعدة البيانات.. قل لـ عبدالله الدرويش يسجلك");
         registerBtn.style.display = 'block'; // يظهر زر التسجيل
+        registerNewBtn.style.display = 'block'; // يظهر زر إضافة نفسي
       }
     }
+
+    registerNewBtn.onclick = () => {
+      const phoneNumber = phoneNumberInput.value.trim();
+      const whatsappLink = `https://wa.me/967734799935?text=أريد%20تسجيل%20رقمي%20${phoneNumber}%20في%20الموقع.`;
+      window.open(whatsappLink, '_blank');
+    };
 
     registerBtn.onclick = () => {
       const phoneNumber = phoneNumberInput.value.trim();
@@ -180,6 +200,21 @@
       }
     };
 
+    // وظيفة لتحديث الأيام تلقائيًا كل منتصف الليل
+    function updateDays() {
+      const now = new Date();
+      if (now.getHours() === 0 && now.getMinutes() === 0) {
+        Object.keys(userDatabase).forEach(phone => {
+          const startDate = new Date(userDatabase[phone].startDate);
+          const diff = Math.floor((now - startDate) / (1000 * 60 * 60 * 24));
+          if (diff > 0) {
+            userDatabase[phone].startDate = new Date(startDate.setDate(startDate.getDate() + 1)).toISOString().split('T')[0]; // زيادة يوم
+            showUser(phone);
+          }
+        });
+      }
+    }
+    setInterval(updateDays, 60000); // تحديث كل دقيقة للتأكد من التوقيت
   </script>
 </body>
 </html>
